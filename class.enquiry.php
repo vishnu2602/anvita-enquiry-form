@@ -58,93 +58,188 @@ class Enquiry{
 		session_start();
 		$response = array();
 		$response['status']=false;
-		$response['msg']="Invalid request";	
-		$settings=json_decode(get_option('enquiry'),true);
-		$response['val']=$_POST;
-		if($response['val']['enq-captcha'] != '')
-		{
-		if($response['val']['enq-captcha']==$_SESSION[$response['val']['enq-var']]){
+		$response['msg']="Invalid request";
+		if(isset($_POST['enq-captcha'])&&isset($_POST['enq-var'])){
+			$sess=$_POST['enq-var'];
+		if(isset($_SESSION[$sess])&&($_POST['enq-captcha']==$_SESSION[$sess])){
 			
-		if(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-name']))
-		{
-			$response['msg']="Invalid name";	
-		}
-		elseif(!filter_var($response['val']['enq-email'],FILTER_VALIDATE_EMAIL))
-		{
-			$response['msg']="Invalid email";	
-		}
-		elseif(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-selectedCountry']))
-		{
-			$response['msg']="Invalid country";	
-		}	
-		elseif(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-city']))
-		{
-			$response['msg']="Invalid city";	
-		}
-			else
-			{
+		$settings=json_decode(get_option('enquiry'),true);
+		$validate=self::validate_data($_POST,$settings);
+		if($validate['status']){
+			$vals=$_POST;
+			$vals['ip']=self::get_client_ip();
+			$now=current_time( 'mysql' );
+			unset($vals['action']);
+			
+			if(isset($vals['enq-enqid'])){
+				$enqid=$vals['enq-enqid'];
+				unset($vals['enq-enqid']);
+			}
+			else $enqid=0;
+			$date=date('Y-m-d',strtotime($vals['enq-date']));
+			unset($vals['enq-date']);
+		
+		// $response['val']=$_POST;
+		// if($response['val']['enq-captcha'] != '')
+		// {
+		// if($response['val']['enq-captcha']==$_SESSION[$response['val']['enq-var']]){
+			
+		// if(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-name']))
+		// {
+			// $response['msg']="Invalid name";	
+		// }
+		// elseif(!filter_var($response['val']['enq-email'],FILTER_VALIDATE_EMAIL))
+		// {
+			// $response['msg']="Invalid email";	
+		// }
+		// elseif(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-selectedCountry']))
+		// {
+			// $response['msg']="Invalid country";	
+		// }	
+		// elseif(!preg_match('/[a-zA-Z]{2,}/', $response['val']['enq-city']))
+		// {
+			// $response['msg']="Invalid city";	
+		// }
+			// else
+			// {
 				
 				global $wpdb;
-				$host=self::get_client_ip();					
-				$phone=$response['val']['phone'];
-				$code=$response['val']['phonecode'];
-				$phonenumber= $code . '-' . $phone;
-				$lcode=$response['val']['phonecode2'];
-				$landno=$lcode.'-'.$response['val']['areacode'].'-'.$response['val']['phone2'];
 				$ret=$wpdb->insert( self::enquirytable(), 
-						array( 
-								'name' => $response['val']['enq-name'], 
-								'email' => $response['val']['enq-email'],
-								'country'=> $response['val']['enq-selectedCountry'],
-								'city'=> $response['val']['enq-city'],
-								'ip'=> $host,
-								'mobile'=> $response['val']['enq-mobile'],
-								'phone'=> $response['val']['enq-phone'],
-								'msg'=>$response['val']['enq-msg'],
-								'isdel'=>'0'
-				 ));	
-			$response['msg']="We received your following enquiry. We will get back to you soon.";
-			//self::send_sms($response['val']['mobile'],$rand,$response['val']['name']);
-			
-			$msg="<table>
-			<tr><td>Name</td><td>".$response['val']['enq-name']."</td></tr>
-			<tr><td>Email</td><td>".$response['val']['enq-email']."</td></tr>
-			<tr><td>Mobile</td><td>".$response['val']['enq-mobile']."</td></tr>
-			<tr><td>Land Number</td><td>".$response['val']['enq-phone']."</td></tr>
-			<tr><td>City</td><td>".$response['val']['enq-city']."</td></tr>
-			<tr><td>Country</td><td>".$response['val']['enq-selectedCountry']."</td></tr>
-			<tr><td>Message</td><td>".$response['val']['enq-msg']."</td></tr>
-			<tr><td>IP</td><td>".$host."</td></tr>				
-			</table>";
-			$sub="Enquiry";
-			add_filter( 'wp_mail_content_type', 'set_offer_html_content_type' );
-			function set_offer_html_content_type() { return 'text/html';}
-			
-			self::send_email("vishnu@tours2health.com",$msg,$sub);
-			
-			// $msg="Hi ".$response['val']['name'].",
-			// <p>Congrats ! Your are selected for HAPPY SMILE OFFER @ DENTAL SOLUTIONS. Offer Code : ".$rand."</p>";
-			// self::send_email($response['val']['email'],"","",$msg,$sub);
-			
+					array( 
+							'aw_date' => $date, 
+							'enqid' => $enqid,
+							'createdon'=> $now,
+							'name' => $vals['enq-name'], 
+							'email' => $vals['enq-email'],
+							'country'=> $vals['enq-selectedCountry'],
+							'city'=> $vals['enq-city'],
+							'ip'=> $vals['ip'],
+							'mobile'=> $vals['enq-mobile'],
+							'phone'=> $vals['enq-phone'],
+							'msg'=>$vals['enq-msg'],
+							'isdel'=>'0'
+			 ));
+				
+			if($ret){
+				$response['status']=true;
+				$response['msg']="<li>Thankyou. We will contact you soon...</li>";
+				$response['data']=$_POST;
+				$vals['enq-date']=$date;
+				self::send_email_alert($vals,$settings);
+				unset($_SESSION[$sess]);
+				
+			}
+			else{
+				$response['msg']="<li>Failed ...</li>";
+			}
+			}
+			else{
+				$response['msg']=$validate['msg'];
 			}
 		}
 		else{
-			$response['msg']="Invalid Captcha";
-			
+			$response['msg']="<li>Invalid Captcha</li>";
 		}
-			
 		}
-		else
-		{
-			$response['msg']="invalid captcha";	
+		else{
+			$response['msg']="<li>Invalid Request</li>";
 		}
-			
-	header( "Content-Type: application/json" );		
-	
-	echo json_encode($response);
-	wp_die();
+		
+				
+		header( "Content-Type: application/json" );		
+		echo json_encode($response);
+		wp_die();
 	}
-	
+	public static function send_email_alert($vals,$settings){
+		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
+		$remove=['aw-var',
+				'aw-captcha',
+		];
+		$i=1;
+		foreach($vals as $k=>$v){
+			if(!in_array($k, $remove)){
+				$msg[$i]="<tr><td>".str_replace("enq-", "", $k)."</td><td>".$v."</td></tr>";
+			}
+			$i++;			
+		}
+		$headers=[];
+		if($cc!="") $headers[] = 'Cc: '.$cc;
+		if($bcc!="") $headers[] = 'Bcc: '.$bcc;		
+		
+		$sub="Enquiry";
+		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
+		function set_html_content_type() { return 'text/html';}
+		
+		// if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
+		// else $to="";
+		
+		$message=join($msg);
+
+		wp_mail( 'vishnu@tours2health.com', $sub, $message, $headers );
+		
+		if($vals['enq-email']!=""){
+			$message="<p>Hi ".$vals['enq-name']."</p><p>Your appointment has been booked with the following details</p>".$message;
+			wp_mail( $vals['enq-email'], $sub, $message );
+		}
+			
+	}
+	public static function validate_data($data,$settings){
+		
+		$return['status']=true;
+		$return['msg']='';
+		$msgs=[];		
+			foreach($data as $key=>$value){
+				if($key=="enq-email"){
+					if(!filter_var($value, FILTER_VALIDATE_EMAIL)){
+						$return['status']=false;
+						array_push($msgs, "<li>Invalid Email id</li>");						
+					}					
+				}
+				// elseif($key=="aw-phone"){
+					
+					  
+					 // if(!preg_match("/^\+?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/", $value)){
+						// if(!preg_match("/^\(?([0-9]{3,4})\)?[-. ]?([0-9]{4,7})$/", $value)){
+							// if(!preg_match("/^\(?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/", $value)){
+								// if(!preg_match("/^\d{9,10}$/", $value)){
+									// $return['status']=false;
+									// array_push($msgs, "<li>Invalid Phone Number id</li>");
+								// }		
+							// }
+						// }
+						
+					// }
+					
+				// }
+				elseif($key=="enq-name"){
+					if(!preg_match("/^[a-zA-Z ]*$/",$value)||strlen($value)<3){
+						$return['status']=false;
+						array_push($msgs, "<li>Only letters and white space allowed in name</li>");						
+					}
+				}
+				elseif($key=="enq-selectedCountry"){
+					if(!preg_match("/^[a-zA-Z ]*$/",$value)||strlen($value)<3){
+						$return['status']=false;
+						array_push($msgs, "<li>Only letters and white space allowed in country</li>");
+					}
+				}
+				elseif($key=="enq-captcha"){
+					if(strlen($value)<3){
+						$return['status']=false;
+						array_push($msgs, "<li>Invalid Captcha</li>");
+					}
+				
+				
+				
+				}	
+				
+			
+		}
+		$return['msg']=join($msgs);
+			
+			
+		return $return;
+	}
 	// public static function send_email_alert($vals,$settings){
 		// $msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		
@@ -187,13 +282,7 @@ class Enquiry{
 		add_action( 'wp_footer', array('Enquiry','enq_style'));
 		add_action( 'wp_footer', array('Enquiry','enq_scripts'));
 	}	
-	public static function send_email($to,$msg,$sub){
-		
-		$headers=[];
-		if($cc!="") $headers[] = 'Cc: '.$cc;
-		if($bcc!="") $headers[] = 'Bcc: '.$bcc;		
-		return wp_mail( $to, $sub, $msg ,$headers);
-	}
+	
 	public static function enq_scripts(){
 		?>
 		<script type="text/javascript">
@@ -223,7 +312,7 @@ class Enquiry{
 						success:function(data){
 							data.forEach(function(v,k){
 								for(var j in v)
-								$("#select2").append('<option value="+'+j+'">'+v[j]+'</option>');
+								$(".select").append('<option value="+'+j+'">'+v[j]+'</option>');
 							});
 						},
 						error:function(eror){

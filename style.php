@@ -109,4 +109,8 @@ border:1px solid red;
 }
 .anvita-enq .enq_msg{display:none;}
 .anvita-enq .enq-shown {display:block;}
+.anvita-enq .red{
+	color:#DD4B39;
+}
+.anvita-enq .lightbg{background:#F3F3F3; padding:3px 10px;}
 </style>
