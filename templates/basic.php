@@ -3,7 +3,7 @@
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 enq_msg"></div>
 		<input type='text' name='enq-name' id='enqs-name' class='form-control enq-name enq-input' placeholder='Name'/>
 		<input type='text' name='enq-email' id='enqs-email' class='form-control enq-input enq-email' placeholder='Email'/>
-		<select name='enq-country' class="enq-country form-control enq-input select" id='' onChange='getSelectedCountry()'>
+		<select name='enq-country' class="enq-country anv_select_country form-control enq-input select" id='' onChange='getSelectedCountry()'>
 			<option disabled selected>Select Country</option>
 		</select>
 		<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry' id='enq-selectedCountry'/>
