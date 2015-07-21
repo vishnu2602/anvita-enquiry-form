@@ -1,6 +1,7 @@
 <div class="anvita-enq basic">
 	<form method='post' role='form' name='quickcontact' id='quickcontact'>
 		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 enq_msg"></div>
+		<input type="hidden" class="enq-type" name="enq-type" value="normal"/>
 		<input type='text' name='enq-name' id='enqs-name' class='form-control enq-name enq-input' placeholder='Name'/>
 		<input type='text' name='enq-email' id='enqs-email' class='form-control enq-input enq-email' placeholder='Email'/>
 		<select name='enq-country' class="enq-country anv_select_country form-control enq-input select" id='' onChange='getSelectedCountry()'>

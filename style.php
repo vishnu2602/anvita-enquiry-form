@@ -30,14 +30,16 @@ margin:5px 0;
 }
 .anvita-enq .enq-captchaimg{
 	border:1px solid #ccc;
-	width:55%;
+}
+.large .enq-captchaimg{
+	width:15%;
 }
 .anvita-enq .enq-captcha{
 	max-width:150px;
 	min-height:30px;
 }
 .anvita-enq .enq-refresh{
-	height:45px;
+	height:33px;
 	cursor:pointer;
 }
 .anvita-enq .enq-refresh:active{

@@ -1,4 +1,5 @@
 <?php
+//error_reporting(E_ALL);
 class Enquiry{
 	
 	private static $plugin_options=[
@@ -9,7 +10,11 @@ class Enquiry{
 		'crm'=>'',
 		'phone'=>'',
 		];
-		
+
+	private static $theme=0;
+	
+	private static $largeenq_settings = [];
+	
 	private static $initiated = false;
 	
 	private static $settings = [];
@@ -19,14 +24,19 @@ class Enquiry{
 			add_shortcode('anvitaenq', array('Enquiry', 'shortcode'));
 			self::init_hooks();
 			self::$settings=json_decode(get_option('anv_setting'),true);
+			self::$largeenq_settings=json_decode(get_option('anv_setting_large'),true);
 		}	
 	}
+	
+	public function getlargeenqSettings(){
+			return self::$largeenq_settings;
+		}
 	
 	public static function init_hooks(){		
 		self::$initiated = true;
 		add_action( 'wp_enqueue_scripts', array( 'Enquiry', 'load_resources' ) );
-		add_action('wp_ajax_save_enquiry', array('Enquiry','save_enquiry'));
-		add_action( 'wp_ajax_nopriv_save_enquiry', array('Enquiry','save_enquiry'));
+		add_action('wp_ajax_anv_save_enquiry', array('Enquiry','anv_save_enquiry'));
+		add_action( 'wp_ajax_nopriv_anv_save_enquiry', array('Enquiry','anv_save_enquiry'));
 	}
 	public static function load_resources(){
 		wp_register_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css', array(), 3.3 );
@@ -53,9 +63,12 @@ class Enquiry{
 	public static function enq_style(){
 		require_once 'style.php';
 	}
-	public static function save_enquiry(){
+	public static function anv_save_enquiry(){
 		ob_start();
-		session_start();
+		if (session_status()== PHP_SESSION_NONE) 
+			{
+				session_start();
+			}
 		$response = array();
 		$response['status']=false;
 		
@@ -72,12 +85,25 @@ class Enquiry{
 			$vals=$_POST;
 			$vals['ip']=self::get_client_ip();
 			$now=current_time( 'mysql' );
-			unset($vals['action']);						
+			unset($vals['action']);	
+
+			$enq_type=0;
+			$success_msg="Thankyou...We will Contact You Soon..."; 
+			if(isset($vals['enq-type'])){
+				/*
+				 * large-enquiry
+				 */
+				if($vals['enq-type']=="large"){
+					$success_msg="Thankyou...We will Contact You Soon...";
+					$enq_type=1;
+				}
+				unset($vals['enq-type']);			
+			}
 			
 			global $wpdb;
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
-							'createdon'=> $now,
+							'time' => $now,
 							'name' => $vals['enq-name'], 
 							'email' => $vals['enq-email'],
 							'country'=> $vals['enq-selectedCountry'],
@@ -86,13 +112,15 @@ class Enquiry{
 							'mobile'=> $vals['enq-mobile'],
 							'phone'=> $vals['enq-phone'],
 							'msg'=>$vals['enq-msg'],
+							'age'=>$vals['enq-age'],
+							'address' => $vals['enq-address'],
 							'isdel'=>'0'
 			 ));
-				
 			if($ret){
 				$response['status']=true;
-				$response['msg']="<li>Thankyou. We will contact you soon...</li>";
+				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
+				$vals['aw-type']=$aw_type;
 				self::send_email_alert($vals,$settings);
 				unset($_SESSION[$sess]);				
 			}
@@ -123,6 +151,7 @@ class Enquiry{
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		$remove=['enq-var',
 				'enq-captcha',
+				'enq-type',
 		];
 		$i=1;
 		foreach($vals as $k=>$v){
@@ -131,11 +160,20 @@ class Enquiry{
 			}
 			$i++;			
 		}
+		$msg[$i]="</table>";
 		$headers=[];
 		if($settings['cc']!="") $headers[] = 'Cc: '.$settings['cc'];
 		if($settings['bcc']!="") $headers[] = 'Bcc: '.$settings['bcc'];		
 		
 		$sub="Enquiry through ".get_site_url();
+		$lenqmsg="";
+		$lenqdetails="";
+		if($vals['enq-type']==1){
+			$sub="Appointment through ".$domain;
+			$lenqmsg="large enquiry ";
+			$lenqsetting=json_decode(get_option('anv_setting_large'),true);
+			$lenqdetails="<p>you will be receiving a call from here</p>";
+		}
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		function set_html_content_type() { return 'text/html';}
 		
@@ -147,7 +185,7 @@ class Enquiry{
 		wp_mail( $to, $sub, $message, $headers );
 		
 		if($vals['enq-email']!=""){
-			$message="<p>Hi ".$vals['enq-name']."</p><p>Your appointment has been booked with the following details</p>".$message;
+			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message;
 			wp_mail( $vals['enq-email'], $sub, $message );
 		}
 			
@@ -197,13 +235,8 @@ class Enquiry{
 					if(strlen($value)<3){
 						$return['status']=false;
 						array_push($msgs, "<li>Invalid Captcha</li>");
-					}
-				
-				
-				
-				}	
-				
-			
+					}				
+				}		
 		}
 		$return['msg']=join($msgs);
 			
@@ -224,17 +257,31 @@ class Enquiry{
 		return apply_filters( 'wpb_get_ip', $ip );
 	}	
 	public static function shortcode($atts){
+		ob_start();
 		$opt=self::$settings;
-		
-		require_once("templates/basic.php");
+		$lopt=self::$largeenq_settings;
+		if(!isset($atts['theam'])) $atts['theam']="basic";
+		elseif($atts['theam']=="large"){
+			self::$theme=1;
+		}
+		switch($atts['theam']){
+			case 'basic': require "templates/basic.php"; break;
+			case 'large': require "templates/large.php"; break;
+			default: require "templates/basic.php"; break;
+		}
+		$output_string=ob_get_contents();
+		ob_end_clean();
 		add_action( 'wp_footer', array('Enquiry','enq_style'));
-		add_action( 'wp_head', array('Enquiry','enq_scripts'));
+		add_action( 'wp_footer', array('Enquiry','enq_scripts'));
+		
+		return $output_string;
 	}	
 	
 	public static function enq_scripts(){
+		$opt=self::$settings;
 		?>
 		<script type="text/javascript">
-		var anv_options={'ajax' : '<?php echo admin_url( 'admin-ajax.php' ); ?>'};
+		var anv_options={ajax : '<?php echo admin_url( 'admin-ajax.php' ); ?>'};
 		</script>	
 		<?php
 	}
@@ -252,8 +299,11 @@ class Enquiry{
 		else{
 			global $wpdb;
 			$enquiry = get_option( "anv_setting" );
-			$enquiry=json_decode($enquiry, true);			
+			$enquiry_large = json_decode(get_option("anv_setting_large"), true);
+			$enquiry=json_decode($enquiry, true);	
+					
 			if($enquiry==NULL) $enquiry=self::$plugin_options;
+			if($enquiry_large==NULL) $enquiry_large = self::$plugin_options;
 			
 			$oldopt=get_option('jal_db_version');
 			if($oldopt!=NULL){
@@ -263,11 +313,6 @@ class Enquiry{
 			}
 			
 			$enqtable=self::enquirytable();
-			
-				/*
-				 * update plugin
-				 * 
-				 */
 				$sql = "CREATE TABLE ".$enqtable." (
 				`enqid` MEDIUMINT(9) NOT NULL AUTO_INCREMENT,
 				`time` DATETIME NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -280,9 +325,7 @@ class Enquiry{
 				`phone` VARCHAR(20) NULL DEFAULT NULL,
 				`msg` MEDIUMTEXT NOT NULL,
 				`age` TINYINT(4) NULL DEFAULT NULL,
-				`appointmentdate` DATE NULL DEFAULT NULL,
 				`address` VARCHAR(200) NULL DEFAULT NULL,
-				`attachment` VARCHAR(1000) NULL DEFAULT NULL,
 				`isdeleted` INT(2) NOT NULL DEFAULT '0',
 				UNIQUE INDEX `id` (`enqid`)) ".$wpdb->get_charset_collate();
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
@@ -290,7 +333,8 @@ class Enquiry{
 				
 				$enquiry['ver']=ANVITA_ENQUIRY_VERSION;
 				$enquiry=json_encode($enquiry);
-				update_option("anv_setting", $enquiry );			
+				update_option("anv_setting", $enquiry );
+				update_option("anv_setting_large", json_encode($enquiry_large) );			
 		}
 	}
 	/**
