@@ -106,7 +106,7 @@ class Enquiry{
 				global $wpdb;
 				$ret=$wpdb->insert( self::enquirytable(), 
 					array( 
-							'aw_date' => $date, 
+							'enq_date' => $date, 
 							'enqid' => $enqid,
 							'createdon'=> $now,
 							'name' => $vals['enq-name'], 
@@ -152,8 +152,8 @@ class Enquiry{
 	}
 	public static function send_email_alert($vals,$settings){
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
-		$remove=['aw-var',
-				'aw-captcha',
+		$remove=['enq-var',
+				'enq-captcha',
 		];
 		$i=1;
 		foreach($vals as $k=>$v){
