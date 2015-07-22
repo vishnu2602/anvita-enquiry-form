@@ -119,7 +119,7 @@ class Enquiry{
 				$response['status']=true;
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
-				$vals['aw-type']=$aw_type;
+				$vals['enq-type']=$enq_type;
 				self::send_email_alert($vals,$settings);
 				unset($_SESSION[$sess]);				
 			}
@@ -151,6 +151,7 @@ class Enquiry{
 		$remove=['enq-var',
 				'enq-captcha',
 				'enq-type',
+				'enq-country',
 		];
 		$i=1;
 		foreach($vals as $k=>$v){

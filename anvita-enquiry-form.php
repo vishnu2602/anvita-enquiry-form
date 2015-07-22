@@ -22,5 +22,9 @@ register_deactivation_hook( __FILE__, array( 'Enquiry', 'plugin_deactivation' ) 
 require_once( ANVITA_ENQUIRY_PLUGIN_DIR . 'class.enquiry.php' );
 add_action( 'init', array( 'Enquiry', 'init' ) );
 
+if ( is_admin() ) {
+	require_once( ANVITA_ENQUIRY_PLUGIN_DIR . 'class.enquiry-admin.php' );
+	add_action( 'init', array( 'Enquiryadmin', 'init' ) );
+}
 
 ?>
