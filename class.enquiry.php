@@ -114,7 +114,6 @@ class Enquiry{
 							'msg'=>$vals['enq-msg'],
 							'age'=>$vals['enq-age'],
 							'address' => $vals['enq-address'],
-							'isdel'=>'0'
 			 ));
 			if($ret){
 				$response['status']=true;
