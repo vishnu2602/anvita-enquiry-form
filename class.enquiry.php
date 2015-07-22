@@ -203,22 +203,6 @@ class Enquiry{
 						array_push($msgs, "<li>Invalid Email id</li>");						
 					}					
 				}
-				// elseif($key=="aw-phone"){
-					
-					  
-					 // if(!preg_match("/^\+?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/", $value)){
-						// if(!preg_match("/^\(?([0-9]{3,4})\)?[-. ]?([0-9]{4,7})$/", $value)){
-							// if(!preg_match("/^\(?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/", $value)){
-								// if(!preg_match("/^\d{9,10}$/", $value)){
-									// $return['status']=false;
-									// array_push($msgs, "<li>Invalid Phone Number id</li>");
-								// }		
-							// }
-						// }
-						
-					// }
-					
-				// }
 				elseif($key=="enq-name"){
 					if(!preg_match("/^[a-zA-Z ]*$/",$value)||strlen($value)<3){
 						$return['status']=false;
