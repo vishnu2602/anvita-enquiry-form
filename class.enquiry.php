@@ -169,7 +169,7 @@ class Enquiry{
 		$lenqdetails="";
 		$fromemail="anvita.edb@gmail.com";
 		
-		$headers[] = 'From: Domain <'.$fromemail.'>';
+		
 		$head[] = 'From: Domain <'.$fromemail.'>';
 		
 		if($vals['enq-type']==1){
@@ -180,9 +180,9 @@ class Enquiry{
 		}
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		function set_html_content_type() { return 'text/html';}
-		
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
+		$to="vishnu@tours2health.com";
 		
 		$message=join($msg);
 
@@ -190,7 +190,7 @@ class Enquiry{
 		
 		if($vals['enq-email']!=""){
 			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
-			wp_mail( $vals['enq-email'], $sub, $message, $head);
+			wp_mail( $vals['enq-email'], $sub, $message, $head );
 		}
 			
 	}
