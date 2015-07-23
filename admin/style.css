@@ -37,6 +37,16 @@
 	background:#0074A2;
 	color:#fff;
 }
+.anvita-enq .timemsg.enq-shown{
+	padding:4px;
+	box-shadow:0 0 3px #1291D3;
+	border-radius:4px;
+	line-height:20px;
+	background-color:#7AC4DA;
+	color:#fff;
+	letter-spacing:1px;
+	
+}
 
 .anvita-enq .panel {
   margin-bottom: 20px;
@@ -178,4 +188,26 @@
 	margin:0;
 	padding:1em;
 	
+}
+.anvita-enq .nos{
+	width:84px;
+	text-align:center;
+}
+.anvita-enq .enq-cover-panel{
+	position:absolute;
+	left:0;
+	top:0;
+	z-index:9999;
+	background:rgba(255,255,255,0.8);
+	width:100%;
+}
+.anvita-enq .enq-cover-panel img{
+	margin:auto;
+	padding:3px;
+	height:10px;
+	width:100%;
+}
+.enq-inline{
+	display:inline-block;
+	float:left;
 }

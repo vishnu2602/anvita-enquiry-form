@@ -27,7 +27,7 @@ class Enquiryadmin{
 		add_action( 'admin_init', array( 'Enquiryadmin', 'admin_init' ) );
 		add_action( 'admin_menu', array( 'Enquiryadmin', 'admin_menu' ) );
 		add_action( 'admin_enqueue_scripts', array( 'Enquiryadmin', 'load_resources' ) );
-		add_action('wp_ajax_aw_update_options', array('Enquiryadmin','enq_update_options'));
+		add_action('wp_ajax_enq_update_options', array('Enquiryadmin','enq_update_options'));
 		add_action('wp_ajax_enquiry_list', array('Enquiryadmin','enquiry_list'));
 		add_action('wp_ajax_enquiry_trash', array('Enquiryadmin','enquiry_trash'));
 	}
@@ -52,8 +52,7 @@ class Enquiryadmin{
 		wp_enqueue_style( 'jqueryui');
 	}
 	
-	public static function load_enquiry($isdeleted=0){
-		
+	public static function load_enquiry($isdeleted=0){		
 		$f=0;
 		global $wpdb;
 		if(isset($_POST['p'])){
@@ -65,11 +64,10 @@ class Enquiryadmin{
 		
 		$return['no'] = $wpdb->get_var("SELECT COUNT(*) FROM ".self::enquirytable()."
 				WHERE isdeleted = ".$isdeleted);
+		$q="SELECT * FROM ".self::enquirytable()."
+				WHERE isdeleted = '".$isdeleted."' order by enqid desc LIMIT ".$f.",".$c;
+		$return['result'] = $wpdb->get_results($q);
 		
-		$return['result'] = $wpdb->get_results(
-				"SELECT * FROM ".self::enquirytable()."
-				WHERE isdeleted = ".isdeleted." order by id desc LIMIT ".$f.",".$c
-		);
 		$return['f']=$f;
 		$return['c']=$c;
 		return $return;
@@ -89,11 +87,10 @@ class Enquiryadmin{
 	}
 	
 	public static function enquiry_list($res=""){
+		$val=$_POST;
 		if($res==""){
 			 $res=self::load_enquiry($_POST['d']);
 		}
-		
-		
 		$html[0]='<table class="enq-schedule">
 		<tbody>
 		<tr>
@@ -102,19 +99,21 @@ class Enquiryadmin{
 		<th>Country</th>
 		<th>City</th>
 		<th>Message</th>
-		<th>Enquiry Type</th>
 		<th>Enquiry Date</th>
 		</tr>';
 		
 
-		$remove=['enq-name',
-				'enq-email',
-				'enq-selectedCountry',
-				'enq-city',
-				'enq-var',
-				'enq-captcha',
-				'enq-msg',
-				'enq-type',
+		$remove=['name',
+				'email',
+				'country',
+				'time',
+				'city',
+				'var',
+				'captcha',
+				'msg',
+				'isdeleted',
+				'type',
+				'enqid'
 		];
 		$class="odd";
 		foreach($res['result'] as $r){
@@ -125,23 +124,19 @@ class Enquiryadmin{
 			else{
 				$isdeleted="dashicons-trash";
 				$deltitle="Delete";
-			}
-				
-			//$details=json_decode($r->aw_details,true);			
+			}			
 			array_push($html, '<tr class="'.$class.'">');
-			array_push($html, "<td>".$_POST['enq-name']."</td>");
-			array_push($html, "<td>".$_POST['enq-email']."</td>");
-			array_push($html, "<td>".$_POST['enq-selectedCountry']."</td>");
-			array_push($html, "<td>".$_POST['enq-city']."</td>");
-			array_push($html, "<td>".$_POST['enq-msg']."</td>");
-			if($r->enq_type==0)	array_push($html, "<td>Normal</td>");
-			elseif($r->enq_type==1)	array_push($html, "<td>Large Form</td>");
-			array_push($html, "<td>".date('d-m-Y H:i:s',current_time( 'mysql' ))."</td>");
-			array_push($html,"<td><a title='$deltitle' class='enq_trash_app dashicons $isdeleted' data-isdeleted='".$r->isdeleted."' data-id='".$r->id."' href='#'></a></td>");
+			array_push($html, "<td>".$r->name."</td>");
+			array_push($html, "<td>".$r->email."</td>");
+			array_push($html, "<td>".$r->country."</td>");
+			array_push($html, "<td>".$r->city."</td>");
+			array_push($html, "<td>".$r->msg."</td>");
+			array_push($html, "<td>".date('d-m-Y H:i:s',strtotime($r->time))."</td>");
+			array_push($html,"<td><a title='$deltitle' class='enq_trash_app dashicons $isdeleted' data-isdeleted='".$r->isdeleted."' data-id='".$r->enqid."' href='#'></a></td>");
 			array_push($html,"</tr>");
 			array_push($html,'<tr class="'.$class.'">');
 			array_push($html,"<td colspan='6'>");
-			foreach ($_POST as $dk=>$dv){
+			foreach ($r as $dk=>$dv){
 				if(!in_array($dk, $remove)){
 					array_push($html, "<span class='enq_more'>".str_replace("enq-", "", $dk)." : ". $dv."</span>");
 				}
@@ -159,13 +154,48 @@ class Enquiryadmin{
 	
 	public static function enquiry_trash(){
 		if(isset($_POST['id'])){
+			
 			global $wpdb;
-			
-			if($_POST['d']==0) $wpdb->query("UPDATE ".self::enquirytable()." SET isdel = 1 WHERE ID = ".$_POST['id']);
-			else  $wpdb->query("UPDATE ".self::enquirytable()." SET isdel = 0 WHERE ID = ".$_POST['id']);
-			
+			if($_POST['d']==0) $wpdb->query("UPDATE ".self::enquirytable()." SET isdeleted = 1 WHERE enqid = ".$_POST['id']);
+			else  $wpdb->query("UPDATE ".self::enquirytable()." SET isdeleted = 0 WHERE enqid = ".$_POST['id']);
+			echo $_POST['id'];
 		}
 		
+	}
+	
+	public static function aw_update_options(){
+		$response = array();
+		$response['resp']="";		
+		if(!empty($_POST['field'])){
+			$opt=json_decode(get_option('anv_setting'),true);
+			if($_POST['field']=="alertdetails"){
+				$opt['email']['to']=$_POST['to'];
+				$opt['email']['cc']=$_POST['cc'];
+				$opt['email']['bcc']=$_POST['bcc'];
+				$large_opt=json_decode(get_option('anv_setting_large'),true);
+				update_option('anv_setting_large', json_encode($large_opt));
+				$response['resp']=true;
+			}
+			/*
+			 * Update Options
+			 */
+			$loption=false;
+			if(isset($_POST['ltype'])){
+				if($_POST['ltype']==1){
+					update_option('anv_setting_large', json_encode($opt));
+					$loption=true;
+						
+				}
+			}
+			if(!$loption) update_option('anv_setting', json_encode($opt));
+			
+		} else {
+			$response['resp'] = "You didn't send the param";
+		}
+		
+		header( "Content-Type: application/json" );
+		echo json_encode($response);
+		wp_die();
 	}
 	
 	public function saveSettings($vals){		
@@ -175,8 +205,8 @@ class Enquiryadmin{
 		$settings['email']['bcc']=$vals['bcc'];
 		
 		self::$settings=$settings;
-		update_option('anv_setting', json_encode($settings));
-	}
+		update_option('aw-appointments', json_encode($settings));
 	
+}
 }
 ?>

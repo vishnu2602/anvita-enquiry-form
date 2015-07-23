@@ -17,6 +17,8 @@
 				<option disabled selected>Select Country</option>
 			</select>
 			<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/><br/>
+			<div style="width:30%; float:left;">Address</div>
+			<input style="width:70%;" type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/>
 			<div class="mobile_box" style="float:left; width:100%;">
 				<div style="width:30%; float:left;">Mobile</div>
 				<div style="width:70%; float:left;">

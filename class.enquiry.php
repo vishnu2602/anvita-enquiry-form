@@ -161,15 +161,19 @@ class Enquiry{
 			$i++;			
 		}
 		$msg[$i]="</table>";
-		$headers=[];
-		if($settings['cc']!="") $headers[] = 'Cc: '.$settings['cc'];
-		if($settings['bcc']!="") $headers[] = 'Bcc: '.$settings['bcc'];		
+		if($settings['email']['cc']!="") $headers[] = 'Cc: '.$settings['email']['cc'];
+		if($settings['email']['bcc']!="") $headers[] = 'Bcc: '.$settings['email']['bcc'];
 		
 		$sub="Enquiry through ".get_site_url();
 		$lenqmsg="";
 		$lenqdetails="";
+		$fromemail="anvita.edb@gmail.com";
+		
+		$headers[] = 'From: Domain <'.$fromemail.'>';
+		$head[] = 'From: Domain <'.$fromemail.'>';
+		
 		if($vals['enq-type']==1){
-			$sub="Appointment through ".$domain;
+			$sub="Appointment through Enquiry Box ";
 			$lenqmsg="large enquiry ";
 			$lenqsetting=json_decode(get_option('anv_setting_large'),true);
 			$lenqdetails="<p>you will be receiving a call from here</p>";
@@ -178,15 +182,15 @@ class Enquiry{
 		function set_html_content_type() { return 'text/html';}
 		
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
-		else $to='vishnu@tours2health.com';
+		else $to='';
 		
 		$message=join($msg);
 
 		wp_mail( $to, $sub, $message, $headers );
 		
 		if($vals['enq-email']!=""){
-			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message;
-			wp_mail( $vals['enq-email'], $sub, $message );
+			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
+			wp_mail( $vals['enq-email'], $sub, $message, $head);
 		}
 			
 	}
