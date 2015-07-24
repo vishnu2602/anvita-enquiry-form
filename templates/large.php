@@ -19,14 +19,14 @@
 			<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/><br/>
 			<div style="width:30%; float:left;">Address</div>
 			<input style="width:70%;" type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/>
-			<div class="mobile_box" style="float:left; width:100%;">
+			<div class="mobile_box" style="width:100%;">
 				<div style="width:30%; float:left;">Mobile</div>
 				<div style="width:70%; float:left;">
 				<input name='phonecode' style='width:40%; float:left;' id='phonecode' type='text' class='form-control enq-newval enq-input phonecode'>	
 				<input style='width:60%; float:left;' name='phone' id='phone1' type='text' class='quickenqfield form-control mobi enq-newval enq-input enq-phone' placeholder='Phone'/>
 				</div>
 			</div>
-			<div class="mobile_box" style="float:left;">
+			<div class="mobile_box" style="float:left; width:100%;">
 				<div style="width:30%; float:left;">Landline</div>
 				<input style='width:20%; float:left;' type='text' class='form-control land enq-input enq-newval phonecode2' id='phonecode2' name='phonecode2' />
 				<input style='width:20%; float:left;' type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/>
@@ -34,13 +34,16 @@
 			</div>
 			<!--  Attach Document:<br/>
 			<input class="enq-file enq-input form-control" name='enq-att' type='file' id='file' size='13'/><br/>-->
-			<div style="width:30%; float:left;"><span class='red'>*</span>Enter the code:</div>
-			<div class="captcha">
-			<?php $enq_rand='enq-'.rand(0,999); ?>
-			<input type="hidden" class="enq-captchavar" name="enq-var" value="<?php echo $enq_rand; ?>"/>
-			<input type="text" style="width:30%; float:left;" class="enq-captcha enq-input form-control" placeholder="Captcha" name="enq-captcha"/>
-			<img class="enq-captchaimg" style="float:left;" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL.'captcha.php?var='.$enq_rand; ?>"/>
-			<br/><img class="enq-refresh" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL; ?>refresh.png"/>
+			<div style="width:100%;">
+				<div style="width:30%; float:left;"><span class='red'>*</span>Enter the code:</div>
+				<div class="captcha">
+				<?php $enq_rand='enq-'.rand(0,999); ?>
+				<input type="hidden" class="enq-captchavar" name="enq-var" value="<?php echo $enq_rand; ?>"/>
+				<input type="text" style="width:30%; float:left;" class="enq-captcha enq-input form-control" placeholder="Captcha" name="enq-captcha"/>
+				<img class="enq-captchaimg" style="float:left;" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL.'captcha.php?var='.$enq_rand; ?>"/>
+				<br/><img class="enq-refresh" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL; ?>refresh.png"/>
+				</div>
+				<div style="clear:both;">
 			</div>
 			<div class="enq-msg"></div>
 			<div style='width:100%;'>

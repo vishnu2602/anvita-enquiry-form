@@ -3,7 +3,6 @@ $enqobj=new Enquiryadmin();
 if(isset($_POST['enq-setting'])) $enqobj->saveSettings($_POST['enq-setting']);
 
 $settings=$enqobj->getSettings();
-$largeenq_settings=$enqobj->getlargeenqSettings();
 ?>
 <div class="anvita-enq">
 	<div class="panel panel-default">
@@ -91,12 +90,15 @@ var enq_appo={pluginurl:"<?php echo ANVITA_ENQUIRY_PLUGIN_URL;?>"};
 		var eto=$('#eto').val();
 		var ecc=$('#ecc').val();
 		var ebcc=$('#ebcc').val();
+		var enq_crm=$('#enq_crm').val();
+		var phn=$('#phn').val();
 		var obj=$(this);
 		if(enq_validateemail(eto)&&enq_validateemail(ecc)&&enq_validateemail(ebcc)){
 
 			var enqcover=enq_show_loading();
 			
-			var data={ action: 'enq_update_options' , field: 'alertdetails', to: eto, cc: ecc, bcc: ebcc };	
+			var data={ action: 'enq_update_options' , field: 'alertdetails', to: eto, cc: ecc, bcc: ebcc, crm: enq_crm, phone: phn };
+			console.log(data);
 			$.post(ajaxurl, data, function(response) {
 				if(response.resp){
 					enq_show_msg(obj.closest('.wrap'),"Settings updated successfully");

@@ -4,16 +4,16 @@ class Enquiry{
 	
 	private static $plugin_options=[
 		'ver'=>'0',
-		'to'=>'',
-		'cc'=>'',
-		'bcc'=>'',
+		'email'=>[
+					'to'=>'',
+					'cc'=>'',
+					'bcc'=>'',
+			],
 		'crm'=>'',
 		'phone'=>'',
 		];
 
 	private static $theme=0;
-	
-	private static $largeenq_settings = [];
 	
 	private static $initiated = false;
 	
@@ -24,13 +24,8 @@ class Enquiry{
 			add_shortcode('anvitaenq', array('Enquiry', 'shortcode'));
 			self::init_hooks();
 			self::$settings=json_decode(get_option('anv_setting'),true);
-			self::$largeenq_settings=json_decode(get_option('anv_setting_large'),true);
 		}	
 	}
-	
-	public function getlargeenqSettings(){
-			return self::$largeenq_settings;
-		}
 	
 	public static function init_hooks(){		
 		self::$initiated = true;
@@ -95,7 +90,6 @@ class Enquiry{
 				 */
 				if($vals['enq-type']=="large"){
 					$success_msg="Thankyou...We will Contact You Soon...";
-					$enq_type=1;
 				}
 				unset($vals['enq-type']);			
 			}
@@ -121,6 +115,8 @@ class Enquiry{
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
 				self::send_email_alert($vals,$settings);
+				self::update_crm($vals,$settings);
+				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				
 			}
 			else{
@@ -143,6 +139,42 @@ class Enquiry{
 		header( "Content-Type: application/json" );		
 		echo json_encode($response);
 		wp_die();
+	}
+		
+	public static function send_sms($vals,$opts){
+		if(!isset($vals['enq-phone'])) $teli=$vals['enq-phone'];
+		else $teli=$vals['enq-mobile'];		
+		$max=160;
+		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$teli.', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
+		$msg=substr($msg, 0, $max);
+
+		$url="http://india.ebensms.com/api/v1/sms/bulk.json?token=8c776f82-6cbc-11e4-8804-586b6633fcfb&msisdn=".$opts['phone']."&text=".urlencode($msg)."&sender_id=MDGURU&route=TRANS";
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		$response = curl_exec($ch);
+		curl_close($ch);
+		return $response;
+			}
+	
+	public static function update_crm($vals,$opts){
+		$parms="name=".urlencode($vals['enq-name'])."&email=".urlencode($vals['enq-email']).
+		"&country=".urlencode($vals['enq-selectedCountry']).
+		"&phone=".urlencode($teli).
+		"&message=".urlencode($vals['enq-msg']).
+		"&accid=".$opts['crm'];
+		
+		$url="http://crm.tours2health.com/insertenquiry.php?".$parms;
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+		curl_setopt($ch, CURLOPT_HEADER, FALSE);
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		$response = curl_exec($ch);
+		curl_close($ch);
+		return $response;
 	}
 	
 	public static function send_email_alert($vals,$settings){
@@ -171,18 +203,10 @@ class Enquiry{
 		
 		
 		$head[] = 'From: Domain <'.$fromemail.'>';
-		
-		if($vals['enq-type']==1){
-			$sub="Appointment through Enquiry Box ";
-			$lenqmsg="large enquiry ";
-			$lenqsetting=json_decode(get_option('anv_setting_large'),true);
-			$lenqdetails="<p>you will be receiving a call from here</p>";
-		}
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		function set_html_content_type() { return 'text/html';}
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
-		$to="vishnu@tours2health.com";
 		
 		$message=join($msg);
 
@@ -247,10 +271,9 @@ class Enquiry{
 	public static function shortcode($atts){
 		ob_start();
 		$opt=self::$settings;
-		$lopt=self::$largeenq_settings;
 		if(!isset($atts['theam'])) $atts['theam']="basic";
 		elseif($atts['theam']=="large"){
-			self::$theme=1;
+
 		}
 		switch($atts['theam']){
 			case 'basic': require "templates/basic.php"; break;
@@ -287,11 +310,9 @@ class Enquiry{
 		else{
 			global $wpdb;
 			$enquiry = get_option( "anv_setting" );
-			$enquiry_large = json_decode(get_option("anv_setting_large"), true);
 			$enquiry=json_decode($enquiry, true);	
 					
 			if($enquiry==NULL) $enquiry=self::$plugin_options;
-			if($enquiry_large==NULL) $enquiry_large = self::$plugin_options;
 			
 			$oldopt=get_option('jal_db_version');
 			if($oldopt!=NULL){
@@ -321,8 +342,7 @@ class Enquiry{
 				
 				$enquiry['ver']=ANVITA_ENQUIRY_VERSION;
 				$enquiry=json_encode($enquiry);
-				update_option("anv_setting", $enquiry );
-				update_option("anv_setting_large", json_encode($enquiry_large) );			
+				update_option("anv_setting", $enquiry );			
 		}
 	}
 	/**

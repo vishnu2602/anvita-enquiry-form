@@ -4,22 +4,15 @@ class Enquiryadmin{
 	
 	private static $settings = [];
 	
-	private static $largeenq_settings = [];
-	
 	public static function init() {
 		if ( ! self::$initiated ) {
 			self::init_hooks();
 			self::$settings=json_decode(get_option('anv_setting'),true);
-			self::$largeenq_settings=json_decode(get_option('anv_setting_large'),true);
 		}	
 	}
 	
 	public function getSettings(){
 		return self::$settings;
-	}
-	
-	public function getlargeenqSettings(){
-		return self::$largeenq_settings;
 	}
 	
 	public static function init_hooks() {
@@ -163,7 +156,7 @@ class Enquiryadmin{
 		
 	}
 	
-	public static function aw_update_options(){
+	public static function enq_update_options(){
 		$response = array();
 		$response['resp']="";		
 		if(!empty($_POST['field'])){
@@ -172,23 +165,13 @@ class Enquiryadmin{
 				$opt['email']['to']=$_POST['to'];
 				$opt['email']['cc']=$_POST['cc'];
 				$opt['email']['bcc']=$_POST['bcc'];
-				$large_opt=json_decode(get_option('anv_setting_large'),true);
-				update_option('anv_setting_large', json_encode($large_opt));
+				$opt['crm']=$_POST['crm'];
+				$opt['phone']=$_POST['phone'];
+				update_option('anv_setting', json_encode($opt));
 				$response['resp']=true;
 			}
-			/*
-			 * Update Options
-			 */
-			$loption=false;
-			if(isset($_POST['ltype'])){
-				if($_POST['ltype']==1){
-					update_option('anv_setting_large', json_encode($opt));
-					$loption=true;
-						
-				}
-			}
-			if(!$loption) update_option('anv_setting', json_encode($opt));
-			
+		
+		
 		} else {
 			$response['resp'] = "You didn't send the param";
 		}
@@ -198,15 +181,6 @@ class Enquiryadmin{
 		wp_die();
 	}
 	
-	public function saveSettings($vals){		
-		$settings=self::$settings;
-		$settings['email']['to']=$vals['email'];
-		$settings['email']['cc']=$vals['cc'];
-		$settings['email']['bcc']=$vals['bcc'];
-		
-		self::$settings=$settings;
-		update_option('aw-appointments', json_encode($settings));
-	
-}
+
 }
 ?>
