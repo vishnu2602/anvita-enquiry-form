@@ -278,6 +278,7 @@ class Enquiry{
 		switch($atts['theam']){
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
+			case 'consult': require "templates/consultationform.php"; break; 
 			default: require "templates/basic.php"; break;
 		}
 		$output_string=ob_get_contents();

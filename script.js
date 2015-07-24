@@ -32,7 +32,7 @@
 		
 		
 		
-		function phonevalidate(m,p){
+		function phonevalidate(m,p,enqwrap){
 			var mob=false;
 			var land=false;
 			var pregL=/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
@@ -46,11 +46,11 @@
 					}
 					
 			if(mob||land){
-				$('.mobile_box').removeClass('enq-error');	
+				enqwrap.find('.mobile_box').removeClass('enq-error');	
 				return true;
 			}
 			else{
-			$('.mobile_box').addClass('enq-error');	
+				enqwrap.find('.mobile_box').addClass('enq-error');	
 			return false;			
 			}
 		}
