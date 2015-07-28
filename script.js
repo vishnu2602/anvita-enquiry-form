@@ -46,11 +46,11 @@
 					}
 					
 			if(mob||land){
-				enqwrap.find('.mobile_box').removeClass('enq-error');	
+				$(enqwrap).closest('.anvita-enq ').find('.mobile_box').removeClass('enq-error');	
 				return true;
 			}
 			else{
-				enqwrap.find('.mobile_box').addClass('enq-error');	
+				$(enqwrap).closest('.anvita-enq ').find('.mobile_box').addClass('enq-error');	
 			return false;			
 			}
 		}
@@ -81,8 +81,9 @@
 		});
 		var mob=obj.find('.phonecode').val()+'-'+obj.find('.enq-phone').val();
 		var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
-		
-		formvalid=phonevalidate(mob,land);
+		var x=true;
+		x=phonevalidate(mob,land,this);
+		if(!x) formvalid=x;
 		postdata+=',"enq-mobile" : "'+ mob + '","enq-phone" : "'+ land + '"';
 		postdata+='}';
 		console.log(postdata);
@@ -188,19 +189,19 @@
 
 		   }
 })(jQuery);
- function getSelectedCountry(obj)
+ function getSelectedCountry(enqcntry)
 	{
 
-	var selected_index = $('.anvita-enq .enq-country option:selected').index();
+	var selected_index = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').index();
 	if(selected_index > 0)
 	{
-	  var selected_option_value = $('.anvita-enq .enq-country option:selected').val();
-	   var selected_option_text = $('.anvita-enq .enq-country option:selected').html();
+	  var selected_option_value = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').val();
+	   var selected_option_text = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').html();
 	   
 	   console.log(selected_option_text);
-	   $(obj).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
-	   $(obj).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
-	   $(obj).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);
+	    $(enqcntry).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
+	   $(enqcntry).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
+	   $(enqcntry).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);
 	   
 		}
 	else

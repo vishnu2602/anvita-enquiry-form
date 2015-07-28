@@ -102,7 +102,7 @@ margin:5px 0;
 
 
 .anvita-enq .enq-error{
-border:1px solid red;
+border:1px solid red !important;
 }
 .anvita-enq .enq-success{
 	border:2px solid green;
