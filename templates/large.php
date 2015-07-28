@@ -13,11 +13,11 @@
 			<div style="width:30%; float:left;">Address</div>
 			<textarea  name='enq-address' style="width:70%;" class='enq-input enq-address form-control'></textarea>
 			<div style="width:30%; float:left;"><span class='red'>*</span>Country:</div>
-			<select name='enq-country' style="width:70%;" class="enq-country anv_select_country select form-control enq-input" onChange='getSelectedCountry()'>
+			<select name='enq-country' style="width:70%;" class="enq-country anv_select_country select form-control enq-input" onChange='getSelectedCountry(this)'>
 				<option disabled selected>Select Country</option>
 			</select>
 			<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/><br/>
-			<div style="width:30%; float:left;">Address</div>
+			<div style="width:30%; float:left;">City</div>
 			<input style="width:70%;" type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/>
 			<div class="mobile_box" style="width:100%;">
 				<div style="width:30%; float:left;">Mobile</div>

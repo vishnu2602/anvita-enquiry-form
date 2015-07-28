@@ -188,7 +188,7 @@
 
 		   }
 })(jQuery);
- function getSelectedCountry()
+ function getSelectedCountry(obj)
 	{
 
 	var selected_index = $('.anvita-enq .enq-country option:selected').index();
@@ -198,9 +198,9 @@
 	   var selected_option_text = $('.anvita-enq .enq-country option:selected').html();
 	   
 	   console.log(selected_option_text);
-	   $('.anvita-enq .enq-selectedCountry').val(selected_option_text);
-	   $('.anvita-enq .phonecode').val(selected_option_value);
-	   $('.anvita-enq .phonecode2').val(selected_option_value);
+	   $(obj).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
+	   $(obj).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
+	   $(obj).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);
 	   
 		}
 	else
