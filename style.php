@@ -98,9 +98,13 @@ margin:5px 0;
   border: 1px solid rgba(51, 51, 51, 0.3);
   color: #333;
 }
-
-
-
+.anvita-enq .enq-input{margin:2px 0;}
+.anvita-enq .enq_msg li{list-style:none;}
+.anvita-enq .enq_msg{background:#B93207;
+color:#fff;
+font-size:12px;
+padding:2px 5px;
+}
 .anvita-enq .enq-error{
 border:1px solid red !important;
 }
