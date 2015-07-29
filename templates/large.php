@@ -32,8 +32,7 @@
 				<input style='width:19%; margin-left:4px; float:left;' type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/>
 				<input style='width:29%; margin-left:6px; float:left;' type='text' id='phone2' class='form-control land enq-newval enq-input enq-phone2' name='phone2' placeholder='Phone'/>
 			</div>
-			<!--  Attach Document:<br/>
-			<input class="enq-file enq-input form-control" name='enq-att' type='file' id='file' size='13'/><br/>-->
+			<div style="width:30%; float:left;">Attach Document:</div><input style="width:70%; float:left;" class="enq-file enq-input form-control" name='enq-file' type='file' id='file' size='13'/><br/>
 			<div style="width:100%;">
 				<div style="width:30%; float:left;"><span class='red'>*</span>Enter the code:</div>
 				<div class="captcha">

@@ -60,62 +60,73 @@
 		var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
 		var obj=$(this).closest('.anvita-enq');
 		var data=obj.find('form').serializeArray();
-		console.log(data);
-		var postdata='{ "action" : "anv_save_enquiry"';
 		
+		var postdata= new FormData();
+		postdata.append('action', "anv_save_enquiry");
 			
 		$.each(data,function(k,v){
 			if (!obj.find('[name='+v.name+']').hasClass('enq-newval')) {
 			valid=validateform(obj.find('[name='+v.name+']'),v.value); 
-				console.log(v);
+				
 			if(valid){
+				
 				obj.find('[name='+v.name+']').removeClass("enq-error");
 				}
 			else{
 				obj.find('[name='+v.name+']').addClass("enq-error");
 				formvalid=false;
-				console.log(v.name);
-				}
-			postdata+=',"'+v.name+'" : "'+ v.value + '"';	
+				
+				}	
+			postdata.append(v.name, v.value);
 			}			
 		});
+		
 		var mob=obj.find('.phonecode').val()+'-'+obj.find('.enq-phone').val();
 		var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
 		var x=true;
 		x=phonevalidate(mob,land,this);
 		if(!x) formvalid=x;
-		postdata+=',"enq-mobile" : "'+ mob + '","enq-phone" : "'+ land + '"';
-		postdata+='}';
-		console.log(postdata);
-		postdata=JSON.parse(postdata);
-		console.log(postdata);
-		console.log("before"+formvalid);
+		postdata.append("enq-mobile", mob);
+		postdata.append("enq-phone", land);
+		
+		/*
+		File Upload
+		*/
+		var file_data = $('#file').prop('files')[0];
+		postdata.append('file', file_data);
+		postdata.append('test', "data");
+		console.log(file_data);
+		
 		if(formvalid)
 		{
 				$(this).removeClass('enq-btn-active');
 				$(this).addClass('enq-btn-deactive');									
-				$.post(anv_options.ajax, postdata, function(response) {
-					
-					if(response.status){
+				$.ajax({
+					url: anv_options.ajax, // point to server-side PHP script 
+					cache: false,
+					contentType: false,
+					processData: false,
+					data: postdata,                         
+					type: 'post',
+					success: function(response){
+					  if(response.status){
 						
 					}
-					console.log(response);
-					enq_showmsg(obj,response.msg);					
+					console.log(data);
+					enq_showmsg(obj,response.msg);
+				}
 				}).fail(function(response) {
 					console.log(response);
-			  }).always(function() {	
-				
+			  }).always(function() {				
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');
 				btn.addClass('enq-btn-active');
 				});
-
-							
-			
 		}
-		
 		});
+
+
 		
 		function enq_showmsg(obj,msg){
 			obj=obj.find('.enq_msg');
@@ -189,6 +200,7 @@
 
 		   }
 })(jQuery);
+
  function getSelectedCountry(enqcntry)
 	{
 
@@ -198,7 +210,7 @@
 	  var selected_option_value = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').val();
 	   var selected_option_text = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').html();
 	   
-	   console.log(selected_option_text);
+	   
 	    $(enqcntry).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
 	   $(enqcntry).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
 	   $(enqcntry).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);

@@ -108,6 +108,7 @@ class Enquiry{
 							'msg'=>$vals['enq-msg'],
 							'age'=>$vals['enq-age'],
 							'address' => $vals['enq-address'],
+							'attachment' => $FILES['enq-file'], 
 			 ));
 			if($ret){
 				$response['status']=true;
@@ -336,6 +337,7 @@ class Enquiry{
 				`msg` MEDIUMTEXT NOT NULL,
 				`age` TINYINT(4) NULL DEFAULT NULL,
 				`address` VARCHAR(200) NULL DEFAULT NULL,
+				`attachment` VARCHAR(1000) NULL DEFAULT NULL,
 				`isdeleted` INT(2) NOT NULL DEFAULT '0',
 				UNIQUE INDEX `id` (`enqid`)) ".$wpdb->get_charset_collate();
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
