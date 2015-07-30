@@ -1,14 +1,25 @@
- (function($){ 
+ (function($){
+
+ $('.anv_select_country').change(function(){
+	var selected_index = $(this).closest('.anvita-enq ').find('.enq-country option:selected').index();
+	if(selected_index > 0)
+	{
+	  var selected_option_value = $(this).closest('.anvita-enq ').find('.enq-country option:selected').val();
+	   var selected_option_text = $(this).closest('.anvita-enq ').find('.enq-country option:selected').html();
+	   
+	   console.log(selected_option_text);
+	    $(this).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
+	   $(this).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
+	   $(this).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);	   
+		}
+	else
+		{
+	   alert('Please select a country from the drop down list');
+		}
+});
+ 
 				 $(".anv_select_country").select2({
-				  tags: true,
-				  createTag: function (params) {
-					return {
-					  id: params.term,
-					  text: params.term,
-					  newOption: true,
-					  openOnEnter: false
-					}
-				  }
+				  tags: true,				 
 				});
 
 				
@@ -50,9 +61,16 @@
 				return true;
 			}
 			else{
-				$(enqwrap).closest('.anvita-enq ').find('.mobile_box').addClass('enq-error');	
+			$(enqwrap).closest('.anvita-enq ').find('.mobile_box').addClass('enq-error');	
 			return false;			
 			}
+		}
+		
+		function fileValidate(v){
+			var req=false;
+			var exts='';
+			
+			
 		}
 		
 		$('.enq-btn-active').click(function(){
@@ -60,47 +78,51 @@
 		var re = /^\d{1,2}\/\d{1,2}\/\d{4}$/;
 		var obj=$(this).closest('.anvita-enq');
 		var data=obj.find('form').serializeArray();
-		
+	
 		var postdata= new FormData();
 		postdata.append('action', "anv_save_enquiry");
 			
 		$.each(data,function(k,v){
 			if (!obj.find('[name='+v.name+']').hasClass('enq-newval')) {
 			valid=validateform(obj.find('[name='+v.name+']'),v.value); 
-				
 			if(valid){
-				
 				obj.find('[name='+v.name+']').removeClass("enq-error");
 				}
 			else{
 				obj.find('[name='+v.name+']').addClass("enq-error");
 				formvalid=false;
-				
-				}	
-			postdata.append(v.name, v.value);
+				}
+			postdata.append(v.name, v.value);	
 			}			
 		});
-		
 		var mob=obj.find('.phonecode').val()+'-'+obj.find('.enq-phone').val();
 		var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
+		
 		var x=true;
 		x=phonevalidate(mob,land,this);
 		if(!x) formvalid=x;
 		postdata.append("enq-mobile", mob);
 		postdata.append("enq-phone", land);
 		
+		
 		/*
 		File Upload
 		*/
-		var file_data = $('#file').prop('files')[0];
-		postdata.append('file', file_data);
-		postdata.append('test', "data");
-		console.log(file_data);
-		
+		var hasfile=obj.find('input[type=file]');
+		console.log(hasfile);
+		if(hasfile.length>0){
+			$.each(hasfile,function(k,v){
+				//formvalid=fileValidate(v);
+				if(v.files.length>0){
+				postdata.append(v.name, v.files[0]);	
+				}				
+			});		
+		}
 		if(formvalid)
 		{
 				$(this).removeClass('enq-btn-active');
-				$(this).addClass('enq-btn-deactive');									
+				$(this).addClass('enq-btn-deactive');
+				console.log(anv_options.ajax);				
 				$.ajax({
 					url: anv_options.ajax, // point to server-side PHP script 
 					cache: false,
@@ -109,24 +131,24 @@
 					data: postdata,                         
 					type: 'post',
 					success: function(response){
+						console.log("success");
 					  if(response.status){
 						
 					}
-					console.log(data);
 					enq_showmsg(obj,response.msg);
 				}
 				}).fail(function(response) {
-					console.log(response);
-			  }).always(function() {				
+					console.log("fail");
+			  }).always(function() {
+console.log("complete");				  
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');
 				btn.addClass('enq-btn-active');
 				});
 		}
+		
 		});
-
-
 		
 		function enq_showmsg(obj,msg){
 			obj=obj.find('.enq_msg');
@@ -201,23 +223,5 @@
 		   }
 })(jQuery);
 
- function getSelectedCountry(enqcntry)
-	{
 
-	var selected_index = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').index();
-	if(selected_index > 0)
-	{
-	  var selected_option_value = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').val();
-	   var selected_option_text = $(enqcntry).closest('.anvita-enq ').find('.enq-country option:selected').html();
-	   
-	   
-	    $(enqcntry).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
-	   $(enqcntry).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
-	   $(enqcntry).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);
-	   
-		}
-	else
-		{
-	   alert('Please select a country from the drop down list');
-		}
-	}
+

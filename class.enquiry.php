@@ -1,5 +1,4 @@
 <?php
-//error_reporting(E_ALL);
 class Enquiry{
 	
 	private static $plugin_options=[
@@ -95,6 +94,7 @@ class Enquiry{
 			}
 			
 			global $wpdb;
+			
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
 							'time' => $now,
@@ -108,7 +108,6 @@ class Enquiry{
 							'msg'=>$vals['enq-msg'],
 							'age'=>$vals['enq-age'],
 							'address' => $vals['enq-address'],
-							'attachment' => $FILES['enq-file'], 
 			 ));
 			if($ret){
 				$response['status']=true;
@@ -141,7 +140,6 @@ class Enquiry{
 		echo json_encode($response);
 		wp_die();
 	}
-		
 	public static function send_sms($vals,$opts){
 		if(!isset($vals['enq-phone'])) $teli=$vals['enq-phone'];
 		else $teli=$vals['enq-mobile'];		
@@ -160,6 +158,7 @@ class Enquiry{
 		return $response;
 			}
 	
+	
 	public static function update_crm($vals,$opts){
 		$parms="name=".urlencode($vals['enq-name'])."&email=".urlencode($vals['enq-email']).
 		"&country=".urlencode($vals['enq-selectedCountry']).
@@ -176,7 +175,7 @@ class Enquiry{
 		$response = curl_exec($ch);
 		curl_close($ch);
 		return $response;
-	}
+}
 	
 	public static function send_email_alert($vals,$settings){
 		
@@ -279,7 +278,6 @@ class Enquiry{
 		switch($atts['theam']){
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
-			case 'consult': require "templates/consultationform.php"; break; 
 			default: require "templates/basic.php"; break;
 		}
 		$output_string=ob_get_contents();
@@ -337,7 +335,6 @@ class Enquiry{
 				`msg` MEDIUMTEXT NOT NULL,
 				`age` TINYINT(4) NULL DEFAULT NULL,
 				`address` VARCHAR(200) NULL DEFAULT NULL,
-				`attachment` VARCHAR(1000) NULL DEFAULT NULL,
 				`isdeleted` INT(2) NOT NULL DEFAULT '0',
 				UNIQUE INDEX `id` (`enqid`)) ".$wpdb->get_charset_collate();
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

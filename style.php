@@ -1,4 +1,5 @@
 <style type="text/css">
+.anvita-enq{padding:5px 10px;}
 .anvita-enq .enq-msg{font-size:12px;}
 .anvita-enq .enq-msg li{
 	padding:0 5px; 
@@ -102,7 +103,7 @@ margin:5px 0;
 
 
 .anvita-enq .enq-error{
-border:1px solid red !important;
+border:1px solid red;
 }
 .anvita-enq .enq-success{
 	border:2px solid green;

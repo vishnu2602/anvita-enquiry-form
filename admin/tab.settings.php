@@ -1,3 +1,6 @@
+<pre><?
+print_r($settings);
+?></pre>
 <div class="form-div wrap">
 	<div class="timemsg"></div>
 	<table class="form-table">

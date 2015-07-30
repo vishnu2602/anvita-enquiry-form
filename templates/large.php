@@ -13,13 +13,13 @@
 			<div style="width:30%; float:left;">Address</div>
 			<textarea  name='enq-address' style="width:70%;" class='enq-input enq-address form-control'></textarea>
 			<div style="width:30%; float:left;"><span class='red'>*</span>Country:</div>
-			<select name='enq-country' style="width:70%;" class="enq-country anv_select_country select form-control enq-input" onChange='getSelectedCountry(this)'>
+			<select name='enq-country' style="width:70%;" class="enq-country anv_select_country select form-control enq-input">
 				<option disabled selected>Select Country</option>
 			</select>
 			<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/><br/>
 			<div style="width:30%; float:left;">City</div>
 			<input style="width:70%;" type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/>
-			<div class="mobile_box" style="width:100%;">
+			<div class="mobile_box" style="float:left; width:100%;">
 				<div style="width:30%; float:left;">Mobile</div>
 				<div style="width:70%; float:left;">
 				<input name='phonecode' style='width:40%; float:left;' id='phonecode' type='text' class='form-control enq-newval enq-input phonecode'>	
@@ -32,7 +32,7 @@
 				<input style='width:20%; float:left;' type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/>
 				<input style='width:30%; float:left;' type='text' id='phone2' class='form-control land enq-newval enq-input enq-phone2' name='phone2' placeholder='Phone'/>
 			</div>
-			<div style="width:30%; float:left;">Attach Document:</div><input style="width:70%; float:left;" class="enq-file enq-input form-control" name='enq-file' type='file' id='file' size='13'/><br/>
+			<div style="width:30%; float:left;">Attach Document:</div><input style="width:70%; float:left;" required data-extensions="doc,odt,docx,pdf,jpg,jpeg,png,xls,xlsx" class="enq-file enq-input form-control" name='enq-att' type='file' id='file' size='13'/>
 			<div style="width:100%;">
 				<div style="width:30%; float:left;"><span class='red'>*</span>Enter the code:</div>
 				<div class="captcha">
