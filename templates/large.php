@@ -6,33 +6,33 @@
 			<textarea Placeholder='Message' class='form-control enq-input enq-address' name='enq-msg'></textarea>
 			<div class='lightbg'>Please Fill Your Contact Information</div>
 			<div style="width:30%; float:left;"><span class='red'>*</span>Name:</div>
-			<input type='text' name='enq-name' style="width:70%;" class='form-control enq-name enq-input' placeholder='Name'/><br/>
-			<div style="width:30%; float:left;">Age :</div><input type='text' style="width:70%;" name='enq-age' class="form-control enq-age enq-input"/><br/>
+			<div style="width:70%; float:left"><input type='text' name='enq-name' class='form-control enq-name enq-input' placeholder='Name'/></div>
+			<div style="width:30%; float:left;">Age :</div><div style="width:70%; float:left"><input type='text' name='enq-age' class="form-control enq-age enq-input"/></div>
 			<div style="width:30%; float:left;"><span class='red'>*</span>Email:</div>
-			<input type='text' name='enq-email' style="width:70%;" class='form-control enq-input enq-email' placeholder='Email'/><br/>
+			<div style="width:70%; float:left"><input type='text' name='enq-email' class='form-control enq-input enq-email' placeholder='Email'/></div>
 			<div style="width:30%; float:left;">Address</div>
-			<textarea  name='enq-address' style="width:70%;" class='enq-input enq-address form-control'></textarea>
+			<div style="width:70%; float:left"><textarea  name='enq-address' class='enq-input enq-address form-control'></textarea></div>
 			<div style="width:30%; float:left;"><span class='red'>*</span>Country:</div>
 			<select name='enq-country' style="width:70%;" class="enq-country anv_select_country select form-control enq-input">
 				<option disabled selected>Select Country</option>
 			</select>
 			<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/><br/>
 			<div style="width:30%; float:left;">City</div>
-			<input style="width:70%;" type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/>
+			<div style="width:70%; float:left"><input type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/></div>
 			<div class="mobile_box" style="float:left; width:100%;">
 				<div style="width:30%; float:left;">Mobile</div>
 				<div style="width:70%; float:left;">
 				<input name='phonecode' style='width:40%; float:left;' id='phonecode' type='text' class='form-control enq-newval enq-input phonecode'>	
-				<input style='width:60%; float:left;' name='phone' id='phone1' type='text' class='quickenqfield form-control mobi enq-newval enq-input enq-phone' placeholder='Phone'/>
+				<input style='width:58%; float:left;' name='phone' id='phone1' type='text' class='quickenqfield form-control mobi enq-newval enq-input enq-phone' placeholder='Phone'/>
 				</div>
 			</div>
 			<div class="mobile_box" style="float:left; width:100%;">
 				<div style="width:30%; float:left;">Landline</div>
 				<input style='width:20%; float:left;' type='text' class='form-control land enq-input enq-newval phonecode2' id='phonecode2' name='phonecode2' />
-				<input style='width:20%; float:left;' type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/>
+				<input style='width:18%; float:left;' type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/>
 				<input style='width:30%; float:left;' type='text' id='phone2' class='form-control land enq-newval enq-input enq-phone2' name='phone2' placeholder='Phone'/>
 			</div>
-			<div style="width:30%; float:left;">Attach Document:</div><input style="width:70%; float:left;" required data-extensions="doc,odt,docx,pdf,jpg,jpeg,png,xls,xlsx" class="enq-file enq-input form-control" name='enq-att' type='file' id='file' size='13'/>
+			<div style="width:30%; float:left;">Attach Document:</div><input style="width:69%; padding:0; float:left;" required data-extensions="doc,odt,docx,pdf,jpg,jpeg,png,xls,xlsx" class="enq-file enq-input form-control" name='enq-att' type='file' id='file' size='13'/>
 			<div style="width:100%;">
 				<div style="width:30%; float:left;"><span class='red'>*</span>Enter the code:</div>
 				<div class="captcha">
@@ -42,8 +42,7 @@
 				<img class="enq-captchaimg" style="float:left;" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL.'captcha.php?var='.$enq_rand; ?>"/>
 				<br/><img class="enq-refresh" src="<?php echo ANVITA_ENQUIRY_PLUGIN_URL; ?>refresh.png"/>
 				</div>
-				<div style="clear:both;">
-			</div>
+				<div style="clear:both;"></div>
 			<div class="enq-msg"></div>
 			<div style='width:100%;'>
 				<div class="enq-submit"><button type="button" class="enq-button enq-btn-active">Submit</button></div><br/>

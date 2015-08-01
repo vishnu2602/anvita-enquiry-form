@@ -73,7 +73,6 @@ class Enquiry{
 		if(isset($_SESSION[$sess])&&($_POST['enq-captcha']==$_SESSION[$sess])){
 			
 		$settings=json_decode(get_option('anv_setting'),true);
-		
 		$validate=self::validate_data($_POST);
 		if($validate['status']){
 			$vals=$_POST;
@@ -95,6 +94,20 @@ class Enquiry{
 			
 			global $wpdb;
 			
+			$iffile=0;
+			if($_FILES['enq-att']['name']!=''){
+			if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			$uploadedfile = $_FILES['enq-att'];
+			$upload_overrides = array( 'test_form' => false );
+			$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+			if ( $movefile ) {
+				$movefile= $movefile['url'];	$localpath=explode('uploads',$movefile);
+				$iffile=1;
+			} else {
+				$movefile= "Invalid Attachments";
+			}
+			}
+			else $movefile='No Attachments';
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
 							'time' => $now,
@@ -108,13 +121,17 @@ class Enquiry{
 							'msg'=>$vals['enq-msg'],
 							'age'=>$vals['enq-age'],
 							'address' => $vals['enq-address'],
+							'attachment' => $movefile,
 			 ));
+			
+			
 			if($ret){
 				$response['status']=true;
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
-				self::send_email_alert($vals,$settings);
+				if($iffile==1) $iffile=$localpath[1];
+				self::send_email_alert($vals,$settings,$iffile);
 				self::update_crm($vals,$settings);
 				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				
@@ -177,7 +194,7 @@ class Enquiry{
 		return $response;
 }
 	
-	public static function send_email_alert($vals,$settings){
+	public static function send_email_alert($vals,$settings,$file){
 		
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		$remove=['enq-var',
@@ -204,14 +221,20 @@ class Enquiry{
 		
 		$head[] = 'From: Domain <'.$fromemail.'>';
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
-		function set_html_content_type() { return 'text/html';}
+		if($file=='0') $attach=0;else $attach=1;function set_html_content_type($content_type) {  
+		if( $attach ) {
+        return 'multipart/mixed';
+		} else {
+			return 'text/html';
+		}
+		}
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
 		
 		$message=join($msg);
 
-		wp_mail( $to, $sub, $message, $headers );
-		
+		if($file=='0') wp_mail( $to, $sub, $message, $headers );
+		else {$file=array( WP_CONTENT_DIR . '/uploads/'.$file );	wp_mail( $to, $sub, $message, $headers ,$file);	}
 		if($vals['enq-email']!=""){
 			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
 			wp_mail( $vals['enq-email'], $sub, $message, $head );
@@ -335,6 +358,7 @@ class Enquiry{
 				`msg` MEDIUMTEXT NOT NULL,
 				`age` TINYINT(4) NULL DEFAULT NULL,
 				`address` VARCHAR(200) NULL DEFAULT NULL,
+				`attachment` VARCHAR(1000) NULL DEFAULT NULL,
 				`isdeleted` INT(2) NOT NULL DEFAULT '0',
 				UNIQUE INDEX `id` (`enqid`)) ".$wpdb->get_charset_collate();
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

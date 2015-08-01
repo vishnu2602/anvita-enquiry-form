@@ -18,25 +18,24 @@
 		}
 });
  
-				 $(".anv_select_country").select2({
-				  tags: true,				 
-				});
-
+$(".anv_select_country").select2({
+tags: true,				 
+});
 				
-					$(function(){
-						$.ajax({
-							url:'http://tours2health.org/tools/json/country.json',
-							success:function(data){
-								data.forEach(function(v,k){
-									for(var j in v)
-									$(".select").append('<option value="+'+j+'">'+v[j]+'</option>');
-								});
-							},
-							error:function(eror){
+$(function(){
+	$.ajax({
+		url:'http://tours2health.org/tools/json/country.json',
+		success:function(data){
+			data.forEach(function(v,k){
+				for(var j in v)
+				$(".select").append('<option value="+'+j+'">'+v[j]+'</option>');
+			});
+		},
+		error:function(eror){
 
-							}
-						})
-					});
+		}
+	})
+});
 					
 					//ends
 					
@@ -109,7 +108,6 @@
 		File Upload
 		*/
 		var hasfile=obj.find('input[type=file]');
-		console.log(hasfile);
 		if(hasfile.length>0){
 			$.each(hasfile,function(k,v){
 				//formvalid=fileValidate(v);
@@ -122,14 +120,14 @@
 		{
 				$(this).removeClass('enq-btn-active');
 				$(this).addClass('enq-btn-deactive');
-				console.log(anv_options.ajax);				
+				console.log("hai");
 				$.ajax({
 					url: anv_options.ajax, // point to server-side PHP script 
 					cache: false,
 					contentType: false,
 					processData: false,
 					data: postdata,                         
-					type: 'post',
+					type: 'POST',
 					success: function(response){
 						console.log("success");
 					  if(response.status){
@@ -140,7 +138,7 @@
 				}).fail(function(response) {
 					console.log("fail");
 			  }).always(function() {
-console.log("complete");				  
+				console.log("complete");				  
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');

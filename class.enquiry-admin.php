@@ -106,7 +106,8 @@ class Enquiryadmin{
 				'msg',
 				'isdeleted',
 				'type',
-				'enqid'
+				'enqid',
+				'attachment'
 		];
 		$class="odd";
 		foreach($res['result'] as $r){

@@ -1,21 +1,22 @@
 <style type="text/css">
 .anvita-enq{padding:5px 10px;}
 .anvita-enq .enq-msg{font-size:12px;}
-.anvita-enq .enq-msg li{
+.anvita-enq .enq_msg li{
 	padding:0 5px; 
 	list-style:none;
 }
-.anvita-enq .enq-msg.enq-shown{
+.anvita-enq .enq_msg.enq-shown{
 	border:1px solid #ff0000;
-	padding:5px;
+	padding:3px 5px;
+	background:#FD0101;
 }
-.anvita-enq .enq-msg.enq-shown.enq-success{
+.anvita-enq .enq_msg.enq-shown.enq-success{
 border:1px solid #00a549;
 }
-.anvita-enq .enq-msg.enq-shown li{
-	color:#ff0000;	
+.anvita-enq .enq_msg.enq-shown li{
+	color:#fff;	
 }
-.anvita-enq .enq-msg.enq-shown.enq-success li{
+.anvita-enq .enq_msg.enq-shown.enq-success li{
 color:#00a549;	
 }
 .anvita-enq hr{
@@ -34,6 +35,8 @@ margin:5px 0;
 }
 .large .enq-captchaimg{
 	width:15%;
+	margin:5px;
+	height:34px;
 }
 .anvita-enq .enq-captcha{
 	max-width:150px;
@@ -85,7 +88,7 @@ margin:5px 0;
 	color:rgba(51, 51, 51, 0.7);
 }
 .anvita-enq input.enq-input,.anvita-enq textarea.enq-input{
-	margin:2px 0;
+	margin:5px 2px;
 	width:100%;
 	padding: 0.5278em;
 	background:#F7F7F7;
