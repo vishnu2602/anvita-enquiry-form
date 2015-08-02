@@ -142,6 +142,7 @@ $(function(){
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');
+				$('.enq-input').val('');
 				btn.addClass('enq-btn-active');
 				});
 		}

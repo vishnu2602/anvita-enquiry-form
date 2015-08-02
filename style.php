@@ -8,10 +8,10 @@
 .anvita-enq .enq_msg.enq-shown{
 	border:1px solid #ff0000;
 	padding:3px 5px;
-	background:#FD0101;
+	background:#B93207;
 }
 .anvita-enq .enq_msg.enq-shown.enq-success{
-border:1px solid #00a549;
+border:1px solid #B93207;
 }
 .anvita-enq .enq_msg.enq-shown li{
 	color:#fff;	
