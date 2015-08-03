@@ -119,4 +119,16 @@ border:1px solid red;
 	color:#DD4B39;
 }
 .anvita-enq .lightbg{background:#F3F3F3; padding:3px 10px;}
+.anv_clear{
+	clear:both;
+}
+.anv_70{
+width:70%; float:left;
+}
+.anv_30{
+width:30%; float:left;
+}
+.anv_row{
+clear:both;
+}
 </style>

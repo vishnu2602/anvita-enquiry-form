@@ -35,7 +35,7 @@ class Enquiryadmin{
 	}
 	
 	public static function admin_menu() {
-		add_menu_page('Enquiry', 'Enquiry', 2,'anvita-enquiry-form/admin/index.php','','dashicons-backup', 4.55);
+		add_menu_page('Enquiry', 'Enquiry', 'manage_option','anvita-enquiry-form/admin/index.php','','dashicons-backup', 4.55);
 	}
 	
 	public static function load_resources(){	

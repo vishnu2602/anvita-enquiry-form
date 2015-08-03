@@ -22,7 +22,7 @@ $(".anv_select_country").select2({
 tags: true,				 
 });
 				
-$(function(){
+$(function(){	
 	$.ajax({
 		url:'http://tours2health.org/tools/json/country.json',
 		success:function(data){
@@ -56,21 +56,36 @@ $(function(){
 					}
 					
 			if(mob||land){
-				$(enqwrap).closest('.anvita-enq ').find('.mobile_box').removeClass('enq-error');	
+				$(enqwrap).closest('.anvita-enq ').find('.anv_phone').removeClass('enq-error');	
 				return true;
 			}
 			else{
-			$(enqwrap).closest('.anvita-enq ').find('.mobile_box').addClass('enq-error');	
+			$(enqwrap).closest('.anvita-enq ').find('.anv_phone').addClass('enq-error');	
 			return false;			
 			}
 		}
 		
-		function fileValidate(v){
-			var req=false;
-			var exts='';
+		
+		
+		$('.enq-input').change(function(){
+			var obj=$(this).closest('.anvita-enq');
+			if ($(this).hasClass('enq-newval')) {
+				var mob=obj.find('.phonecode').val()+'-'+obj.find('.enq-phone').val();
+				var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
+				phonevalidate(mob,land,$(this));
+			}
+			else{
+				var x=validateform($(this),$(this).val());
+				if(x){
+					$(this).removeClass("enq-error");
+				}
+				else{
+					$(this).addClass("enq-error");
+				}
+			}
 			
-			
-		}
+		});
+		
 		
 		$('.enq-btn-active').click(function(){
 		var formvalid=true;
@@ -80,15 +95,16 @@ $(function(){
 	
 		var postdata= new FormData();
 		postdata.append('action', "anv_save_enquiry");
-			
+		var curobj;
 		$.each(data,function(k,v){
-			if (!obj.find('[name='+v.name+']').hasClass('enq-newval')) {
-			valid=validateform(obj.find('[name='+v.name+']'),v.value); 
+			curobj=obj.find('[name='+v.name+']');
+			if (!curobj.hasClass('enq-newval')) {
+			valid=validateform(curobj,v.value); 
 			if(valid){
-				obj.find('[name='+v.name+']').removeClass("enq-error");
+				curobj.removeClass("enq-error");
 				}
 			else{
-				obj.find('[name='+v.name+']').addClass("enq-error");
+				curobj.addClass("enq-error");
 				formvalid=false;
 				}
 			postdata.append(v.name, v.value);	
@@ -108,14 +124,18 @@ $(function(){
 		File Upload
 		*/
 		var hasfile=obj.find('input[type=file]');
+		var file_st=true;
 		if(hasfile.length>0){
+			var anv_file;
 			$.each(hasfile,function(k,v){
-				//formvalid=fileValidate(v);
-				if(v.files.length>0){
-				postdata.append(v.name, v.files[0]);	
-				}				
+				anv_file=obj.find('[name='+v.name+']');
+				file_st=fileValidate(anv_file);
+				if(formvalid) formvalid=file_st;
+				if(v.files.length>0){ postdata.append(v.name, v.files[0]); }				
 			});		
 		}
+		
+		
 		if(formvalid)
 		{
 				$(this).removeClass('enq-btn-active');
@@ -131,7 +151,7 @@ $(function(){
 					success: function(response){
 						console.log("success");
 					  if(response.status){
-						
+						  $('.enq-input').val('');						
 					}
 					enq_showmsg(obj,response.msg);
 				}
@@ -142,12 +162,48 @@ $(function(){
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');
-				$('.enq-input').val('');
 				btn.addClass('enq-btn-active');
 				});
 		}
 		
 		});
+		
+
+		function fileValidate(v){
+			var st=true;
+			var req=false;
+			var exts_str=v.attr('data-extensions').toLowerCase();
+			var exts=[];
+			var f_val=v.val();
+			
+			if(v.attr('required')=="required"){
+				req=true;
+			}
+			
+			if(f_val!=""){
+				if(exts_str!=''){
+					exts=exts_str.split(',');			
+					if ($.inArray(f_val.split('.').pop().toLowerCase(), exts) == -1) {
+						console.log(v.val().split('.').pop().toLowerCase());
+						console.log("Only "+exts_str+" formats are allowed.");
+						st=false;
+					}
+				}
+				console.log(f_val);
+				console.log(v);
+			}
+			else{
+				if(req) st=false;				
+			}
+			
+			
+			if(st){
+				v.removeClass('enq-error');
+			}
+			else v.addClass('enq-error');
+			
+			return st;
+		}
 		
 		function enq_showmsg(obj,msg){
 			obj=obj.find('.enq_msg');
