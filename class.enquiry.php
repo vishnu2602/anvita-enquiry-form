@@ -158,8 +158,10 @@ class Enquiry{
 		wp_die();
 	}
 	public static function send_sms($vals,$opts){
-		if(!isset($vals['enq-phone'])) $teli=$vals['enq-phone'];
-		else $teli=$vals['enq-mobile'];		
+		$mob = $_POST['enq-mobile'];
+		$land = $_POST['enq-phone'];
+		if(!isset($mob)) $teli=$land;
+		else $teli=$mob;
 		$max=160;
 		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$teli.', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
 		$msg=substr($msg, 0, $max);
@@ -273,9 +275,35 @@ class Enquiry{
 					}				
 				}		
 		}
-		$return['msg']=join($msgs);
-			
-			
+		$mob = $_POST['enq-mobile'];
+		$land = $_POST['enq-phone'];
+		$phval = true;
+		$phval=self::phvalidate($mob,$land);
+		if(!$phval['status']){ $return['status']=$phval['status'];
+		array_push($msgs, $phval['msg']);
+		}
+		$return['msg']=join($msgs);	
+		return $return;
+	}
+	private static function phvalidate($mobs,$lands){
+		$return=['status'=>false,'msg'=>''];
+		$mob=false;
+		$land=false;
+		if(preg_match("/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/",$lands)){
+			$land=true;
+		}
+		if(preg_match("/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{7,11})$/",$mobs)){
+			$mob=true;
+		}
+		
+		if($mob||$land){
+			$return['status']=true;
+		}
+		else{
+			$return['status']=false;
+			$return['msg']="<li>Invalid Phone Number</li>";
+		}
+		
 		return $return;
 	}
 	
