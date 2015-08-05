@@ -294,11 +294,11 @@ class Enquiry{
 	public static function shortcode($atts){
 		ob_start();
 		$opt=self::$settings;
-		if(!isset($atts['theam'])) $atts['theam']="basic";
-		elseif($atts['theam']=="large"){
+		if(!isset($atts['type'])) $atts['type']="basic";
+		elseif($atts['type']=="large"){
 
 		}
-		switch($atts['theam']){
+		switch($atts['type']){
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
 			default: require "templates/basic.php"; break;
