@@ -130,6 +130,7 @@ class Enquiry{
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
+				$vals['validphone']=$validate['phone'];
 				if($iffile==1) $iffile=$localpath[1];
 				self::send_email_alert($vals,$settings,$iffile);
 				self::update_crm($vals,$settings);
@@ -158,12 +159,8 @@ class Enquiry{
 		wp_die();
 	}
 	public static function send_sms($vals,$opts){
-		$mob = $_POST['enq-mobile'];
-		$land = $_POST['enq-phone'];
-		if(!isset($mob)) $teli=$land;
-		else $teli=$mob;
 		$max=160;
-		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$teli.', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
+		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$vals['validphone'].', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
 		$msg=substr($msg, 0, $max);
 
 		$url="http://india.ebensms.com/api/v1/sms/bulk.json?token=8c776f82-6cbc-11e4-8804-586b6633fcfb&msisdn=".$opts['phone']."&text=".urlencode($msg)."&sender_id=MDGURU&route=TRANS";
@@ -248,6 +245,7 @@ class Enquiry{
 		
 		$return['status']=true;
 		$return['msg']='';
+		$return['phone']='';
 		$msgs=[];		
 			foreach($data as $key=>$value){
 				if($key=="enq-email"){
@@ -279,6 +277,9 @@ class Enquiry{
 		$land = $_POST['enq-phone'];
 		$phval = true;
 		$phval=self::phvalidate($mob,$land);
+		
+		$return['phone']=$phval['value'];
+		
 		if(!$phval['status']){ $return['status']=$phval['status'];
 		array_push($msgs, $phval['msg']);
 		}
@@ -286,7 +287,7 @@ class Enquiry{
 		return $return;
 	}
 	private static function phvalidate($mobs,$lands){
-		$return=['status'=>false,'msg'=>''];
+		$return=['status'=>false,'msg'=>'','value'=>''];
 		$mob=false;
 		$land=false;
 		if(preg_match("/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/",$lands)){
@@ -298,6 +299,12 @@ class Enquiry{
 		
 		if($mob||$land){
 			$return['status']=true;
+			if($mob==true){
+				$return['value']=$_POST['enq-mobile'];
+			}
+			else{
+				$return['value']=$_POST['enq-phone'];
+			}
 		}
 		else{
 			$return['status']=false;
