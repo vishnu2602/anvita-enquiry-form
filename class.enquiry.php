@@ -93,6 +93,7 @@ class Enquiry{
 			}
 			
 			global $wpdb;
+<<<<<<< HEAD
 			$fileurls=[];
 			$iffile=0;
 			if(isset($_FILES)){
@@ -114,6 +115,23 @@ class Enquiry{
 			}			
 			else $movefile='No Attachments';
 			
+=======
+			
+			$iffile=0;
+			if($_FILES['enq-att']['name']!=''){
+			if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
+			$uploadedfile = $_FILES['enq-att'];
+			$upload_overrides = array( 'test_form' => false );
+			$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
+			if ( $movefile ) {
+				$movefile= $movefile['url'];	$localpath=explode('uploads',$movefile);
+				$iffile=1;
+			} else {
+				$movefile= "Invalid Attachments";
+			}
+			}
+			else $movefile='No Attachments';
+>>>>>>> origin/master
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
 							'time' => $now,
@@ -136,7 +154,13 @@ class Enquiry{
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
+<<<<<<< HEAD
 				self::send_email_alert($vals,$settings,$fileurls);
+=======
+				$vals['validphone']=$validate['phone'];
+				if($iffile==1) $iffile=$localpath[1];
+				self::send_email_alert($vals,$settings,$iffile);
+>>>>>>> origin/master
 				self::update_crm($vals,$settings);
 				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				
@@ -163,10 +187,8 @@ class Enquiry{
 		wp_die();
 	}
 	public static function send_sms($vals,$opts){
-		if(!isset($vals['enq-phone'])) $teli=$vals['enq-phone'];
-		else $teli=$vals['enq-mobile'];		
 		$max=160;
-		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$teli.', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
+		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$vals['validphone'].', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
 		$msg=substr($msg, 0, $max);
 
 		$url="http://india.ebensms.com/api/v1/sms/bulk.json?token=8c776f82-6cbc-11e4-8804-586b6633fcfb&msisdn=".$opts['phone']."&text=".urlencode($msg)."&sender_id=MDGURU&route=TRANS";
@@ -200,7 +222,10 @@ class Enquiry{
 }
 	
 	public static function send_email_alert($vals,$settings,$file){
+<<<<<<< HEAD
 	if(count($file)==0)  $attach=0; else $attach=1;
+=======
+>>>>>>> origin/master
 		
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		$remove=['enq-var',
@@ -227,21 +252,29 @@ class Enquiry{
 		
 		$head[] = 'From: Domain <'.$fromemail.'>';
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
+<<<<<<< HEAD
 	
 		
 		function set_html_content_type($content_type) {  
+=======
+		if($file=='0') $attach=0;else $attach=1;function set_html_content_type($content_type) {  
+>>>>>>> origin/master
 		if( $attach ) {
         return 'multipart/mixed';
 		} else {
 			return 'text/html';
 		}
 		}
+<<<<<<< HEAD
 		
+=======
+>>>>>>> origin/master
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
 		
 		$message=join($msg);
 
+<<<<<<< HEAD
 		if($attach=='0') wp_mail( $to, $sub, $message, $headers );   
 		else {
 		$files=[]; 
@@ -251,6 +284,10 @@ class Enquiry{
 			}
 			wp_mail( $to, $sub, $message, $headers ,$files);	
 			}
+=======
+		if($file=='0') wp_mail( $to, $sub, $message, $headers );
+		else {$file=array( WP_CONTENT_DIR . '/uploads/'.$file );	wp_mail( $to, $sub, $message, $headers ,$file);	}
+>>>>>>> origin/master
 		if($vals['enq-email']!=""){
 			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
 			wp_mail( $vals['enq-email'], $sub, $message, $head );
@@ -262,6 +299,7 @@ class Enquiry{
 		
 		$return['status']=true;
 		$return['msg']='';
+		$return['phone']='';
 		$msgs=[];		
 			foreach($data as $key=>$value){
 				if($key=="enq-email"){
@@ -289,9 +327,44 @@ class Enquiry{
 					}				
 				}		
 		}
-		$return['msg']=join($msgs);
-			
-			
+		$mob = $_POST['enq-mobile'];
+		$land = $_POST['enq-phone'];
+		$phval = true;
+		$phval=self::phvalidate($mob,$land);
+		
+		$return['phone']=$phval['value'];
+		
+		if(!$phval['status']){ $return['status']=$phval['status'];
+		array_push($msgs, $phval['msg']);
+		}
+		$return['msg']=join($msgs);	
+		return $return;
+	}
+	private static function phvalidate($mobs,$lands){
+		$return=['status'=>false,'msg'=>'','value'=>''];
+		$mob=false;
+		$land=false;
+		if(preg_match("/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/",$lands)){
+			$land=true;
+		}
+		if(preg_match("/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{7,11})$/",$mobs)){
+			$mob=true;
+		}
+		
+		if($mob||$land){
+			$return['status']=true;
+			if($mob==true){
+				$return['value']=$_POST['enq-mobile'];
+			}
+			else{
+				$return['value']=$_POST['enq-phone'];
+			}
+		}
+		else{
+			$return['status']=false;
+			$return['msg']="<li>Invalid Phone Number</li>";
+		}
+		
 		return $return;
 	}
 	
@@ -310,16 +383,19 @@ class Enquiry{
 	public static function shortcode($atts){
 		ob_start();
 		$opt=self::$settings;
-		if(!isset($atts['theam'])) $atts['theam']="basic";
-		elseif($atts['theam']=="large"){
+		if(!isset($atts['type'])) $atts['type']="basic";
+		elseif($atts['type']=="large"){
 
 		}
+<<<<<<< HEAD
 		
 	
 		switch($atts['theam']){
+=======
+		switch($atts['type']){
+>>>>>>> origin/master
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
-			case 'consult': require "templates/consultationform.php"; break; 
 			default: require "templates/basic.php"; break;
 		}
 		$output_string=ob_get_contents();

@@ -131,6 +131,7 @@ width:30%; float:left;
 .anv_row{
 clear:both;
 }
+<<<<<<< HEAD
 
 /******** Consult form style ***********/
 
@@ -151,4 +152,6 @@ clear:both;
 .pad-left{padding-left:2px;}
 .enq-radiowrap{margin-top:5px;}
 
+=======
+>>>>>>> origin/master
 </style>

@@ -63,8 +63,11 @@
 			</div>
 			</div>
 			
+<<<<<<< HEAD
 			
 			
+=======
+>>>>>>> origin/master
 			<div class="anv_row">
 			<div class="anv_30">Attach Document:</div>
 			<div class="anv_70"><input required data-extensions="doc,odt,docx,pdf,jpg,jpeg,png,xls,xlsx" class="enq-file enq-input enq-file form-control" name='enq-att' type='file' id='file'/></div>
