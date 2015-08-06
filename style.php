@@ -89,7 +89,6 @@ margin:5px 0;
 }
 .anvita-enq input.enq-input,.anvita-enq textarea.enq-input{
 	margin:5px 2px;
-	width:100%;
 	padding: 0.5278em;
 	background:#F7F7F7;
 	color:#707070;

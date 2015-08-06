@@ -99,17 +99,18 @@ class Enquiry{
 					$upload_overrides = array( 'test_form' => false );
 					$movefile = wp_handle_upload( $file, $upload_overrides );
 					if ( $movefile ) {
-						$movefile= $movefile['url'];	
+					$movefile= $movefile['url'];	
 						array_push($fileurls,$movefile);
 						$iffile=1;
 					} else {
 						$movefile= "Invalid Attachments";
-					}
-				}			
-				
-				}			
+				}
+		}			
+			
 			}			
-			else $movefile='No Attachments';
+		}			
+	else $movefile='No Attachments';
+			
 			
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
@@ -136,7 +137,7 @@ class Enquiry{
 
 				$vals['enq-validphone']=$validate['phone'];
 				if($iffile==1) $iffile=$localpath[1];
-				self::send_email_alert($vals,$settings,$iffile);
+				self::send_email_alert($vals,$settings,$fileurls);
 				self::update_crm($vals,$settings);
 				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				

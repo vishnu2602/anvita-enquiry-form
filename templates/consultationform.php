@@ -9,7 +9,7 @@
 				</div>
 				<div class='col-xs-12 col-sm-6 col-md-6 col-lg-6'>
 					<div><span class='red'>*</span>Country:</div>
-					<select name='enq-country' class="enq-country anv_select_country select form-control enq-input" onChange='getSelectedCountry()'>
+					<select name='enq-country' class="enq-country anv_select_country select form-control enq-input" >
 						<option disabled selected>Select Country</option>
 					</select>
 					<input type='hidden' class='enq-selectedCountry' name='enq-selectedCountry'/>
@@ -36,8 +36,8 @@
 							<div class='genter_sec'>
 							<div ><span class='red'>*</span>Gender:</div>
 								<div class='enq-radiowrap'>
-								 <label for="male">Male</label><input type="radio" name="enq-genter" class=" enq-male  enq-radio " id="male" value="male"/>
-								 <label for="female">Female</label><input type="radio" name="enq-genter" id="female" class="enq-female  enq-radio" value="female"/>
+								 <label for="male">Male</label><input type="radio" name="enq-genter"  id="enq-genter" class="enq-male  enq-radio enq-input" value="male"/>
+								 <label for="female">Female</label><input type="radio" name="enq-genter" id="enq-genter" class="enq-female  enq-radio enq-input" value="female"/>
 								</div>
 							</div>
 						</div>

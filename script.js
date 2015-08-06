@@ -72,6 +72,9 @@ $(function(){
 				var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
 				phonevalidate(mob,land,$(this));
 			}
+			else if($(this).is(':radio')){
+				radiovalidate($(this).closest('.anvita-enq'),$(this).attr('name'));
+			}
 			else{
 				var x=validateform($(this),$(this).val());
 				if(x){
@@ -136,20 +139,19 @@ $(function(){
 		
 				
 		/***   Gender validation start ***/
-		
 		var hasradio=obj.find('input[type="radio"]');
-	
 		var radio_st=true;
+		
 		if(hasradio.length>0){
 			$.each(hasradio,function(k,v){
 				radio_st=radiovalidate(obj,v.name);
 				if(formvalid) formvalid=radio_st;	
-				if(radio_st) postdata.append(v.name, v.value);	
-					
+				if($(this).is(':checked')){
+				postdata.append(v.name,v.value);
+				}
 			});
 		}
-			
-	
+		
 		/***   Gender validation End ***/
 
 		if(formvalid)
