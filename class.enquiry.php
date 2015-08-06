@@ -33,9 +33,6 @@ class Enquiry{
 		add_action( 'wp_ajax_nopriv_anv_save_enquiry', array('Enquiry','anv_save_enquiry'));
 	}
 	public static function load_resources(){
-		wp_register_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css', array(), 3.3 );
-		wp_enqueue_style( 'bootstrap');
-		
 		wp_register_style( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css', array(), 4 );
 		wp_enqueue_style( 'select2');
 
@@ -93,7 +90,6 @@ class Enquiry{
 			}
 			
 			global $wpdb;
-<<<<<<< HEAD
 			$fileurls=[];
 			$iffile=0;
 			if(isset($_FILES)){
@@ -115,23 +111,6 @@ class Enquiry{
 			}			
 			else $movefile='No Attachments';
 			
-=======
-			
-			$iffile=0;
-			if($_FILES['enq-att']['name']!=''){
-			if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
-			$uploadedfile = $_FILES['enq-att'];
-			$upload_overrides = array( 'test_form' => false );
-			$movefile = wp_handle_upload( $uploadedfile, $upload_overrides );
-			if ( $movefile ) {
-				$movefile= $movefile['url'];	$localpath=explode('uploads',$movefile);
-				$iffile=1;
-			} else {
-				$movefile= "Invalid Attachments";
-			}
-			}
-			else $movefile='No Attachments';
->>>>>>> origin/master
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
 							'time' => $now,
@@ -154,13 +133,10 @@ class Enquiry{
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
-<<<<<<< HEAD
-				self::send_email_alert($vals,$settings,$fileurls);
-=======
+
 				$vals['validphone']=$validate['phone'];
 				if($iffile==1) $iffile=$localpath[1];
 				self::send_email_alert($vals,$settings,$iffile);
->>>>>>> origin/master
 				self::update_crm($vals,$settings);
 				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				
@@ -222,11 +198,7 @@ class Enquiry{
 }
 	
 	public static function send_email_alert($vals,$settings,$file){
-<<<<<<< HEAD
 	if(count($file)==0)  $attach=0; else $attach=1;
-=======
->>>>>>> origin/master
-		
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		$remove=['enq-var',
 				'enq-captcha',
@@ -248,33 +220,18 @@ class Enquiry{
 		$lenqmsg="";
 		$lenqdetails="";
 		$fromemail="anvita.edb@gmail.com";
-		
-		
 		$head[] = 'From: Domain <'.$fromemail.'>';
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
-<<<<<<< HEAD
-	
-		
-		function set_html_content_type($content_type) {  
-=======
 		if($file=='0') $attach=0;else $attach=1;function set_html_content_type($content_type) {  
->>>>>>> origin/master
 		if( $attach ) {
         return 'multipart/mixed';
 		} else {
 			return 'text/html';
 		}
 		}
-<<<<<<< HEAD
-		
-=======
->>>>>>> origin/master
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
-		
 		$message=join($msg);
-
-<<<<<<< HEAD
 		if($attach=='0') wp_mail( $to, $sub, $message, $headers );   
 		else {
 		$files=[]; 
@@ -283,20 +240,13 @@ class Enquiry{
 			array_push($files, WP_CONTENT_DIR . '/uploads/'.$localpath[1] );	 
 			}
 			wp_mail( $to, $sub, $message, $headers ,$files);	
-			}
-=======
-		if($file=='0') wp_mail( $to, $sub, $message, $headers );
-		else {$file=array( WP_CONTENT_DIR . '/uploads/'.$file );	wp_mail( $to, $sub, $message, $headers ,$file);	}
->>>>>>> origin/master
 		if($vals['enq-email']!=""){
 			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
 			wp_mail( $vals['enq-email'], $sub, $message, $head );
 		}
-			
-	}
-	
-	public static function validate_data($data){
-		
+		}
+	}	
+	public static function validate_data($data){	
 		$return['status']=true;
 		$return['msg']='';
 		$return['phone']='';
@@ -387,15 +337,11 @@ class Enquiry{
 		elseif($atts['type']=="large"){
 
 		}
-<<<<<<< HEAD
-		
-	
-		switch($atts['theam']){
-=======
 		switch($atts['type']){
->>>>>>> origin/master
+		
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
+			case 'consult': require "templates/consultationform.php"; break;
 			default: require "templates/basic.php"; break;
 		}
 		$output_string=ob_get_contents();

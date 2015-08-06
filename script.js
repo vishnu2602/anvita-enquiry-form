@@ -6,16 +6,9 @@
 	{
 	  var selected_option_value = $(this).closest('.anvita-enq ').find('.enq-country option:selected').val();
 	   var selected_option_text = $(this).closest('.anvita-enq ').find('.enq-country option:selected').html();
-	   
-<<<<<<< HEAD
-	  
-	  
-=======
-	   console.log(selected_option_text);
->>>>>>> origin/master
 	    $(this).closest('.anvita-enq ').find('.enq-selectedCountry').val(selected_option_text);
-	   $(this).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
-	   $(this).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);	   
+	    $(this).closest('.anvita-enq ').find('.phonecode').val(selected_option_value);
+	    $(this).closest('.anvita-enq ').find('.phonecode2').val(selected_option_value);	   
 		}
 	else
 		{
@@ -61,19 +54,11 @@ $(function(){
 					}
 					
 			if(mob||land){
-<<<<<<< HEAD
-				enqwrap.closest('.anvita-enq ').find('.anv_phone').removeClass('enq-error');	
-				return true;
-			}
-			else{
-			enqwrap.closest('.anvita-enq ').find('.anv_phone').addClass('enq-error');	
-=======
 				$(enqwrap).closest('.anvita-enq ').find('.anv_phone').removeClass('enq-error');	
 				return true;
 			}
 			else{
 			$(enqwrap).closest('.anvita-enq ').find('.anv_phone').addClass('enq-error');	
->>>>>>> origin/master
 			return false;			
 			}
 		}
@@ -137,21 +122,13 @@ $(function(){
 		File Upload
 		*/
 		var hasfile=obj.find('input[type=file]');
-<<<<<<< HEAD
-
 		var file_st=true;
 		if(hasfile.length>0){
-				
-=======
-		var file_st=true;
-		if(hasfile.length>0){
->>>>>>> origin/master
-			var anv_file;
+		var anv_file;
 			$.each(hasfile,function(k,v){
 				anv_file=obj.find('[name='+v.name+']');
 				file_st=fileValidate(anv_file);
 				if(formvalid) formvalid=file_st;
-<<<<<<< HEAD
 				if(v.files.length>0){ postdata.append(v.name, v.files[0]); }
 								
 			});		
@@ -174,23 +151,11 @@ $(function(){
 			
 	
 		/***   Gender validation End ***/
-		
-=======
-				if(v.files.length>0){ postdata.append(v.name, v.files[0]); }				
-			});		
-		}
-		
->>>>>>> origin/master
-		
+
 		if(formvalid)
 		{
 				$(this).removeClass('enq-btn-active');
 				$(this).addClass('enq-btn-deactive');
-<<<<<<< HEAD
-
-=======
-				console.log("hai");
->>>>>>> origin/master
 				$.ajax({
 					url: anv_options.ajax, // point to server-side PHP script 
 					cache: false,
@@ -199,32 +164,18 @@ $(function(){
 					data: postdata,                         
 					type: 'POST',
 					success: function(response){
-<<<<<<< HEAD
-						
-=======
-						console.log("success");
->>>>>>> origin/master
 					  if(response.status){
 						  $('.enq-input').val('');						
 					}
 					enq_showmsg(obj,response.msg);
 				}
 				}).fail(function(response) {
-<<<<<<< HEAD
-					
 			  }).always(function() {
-							  
-=======
-					console.log("fail");
-			  }).always(function() {
-				console.log("complete");				  
->>>>>>> origin/master
 				changecaptcha(obj.find('.captcha'));			  
 				var btn=obj.find('.enq-button');
 				btn.removeClass('enq-btn-deactive');
 				btn.addClass('enq-btn-active');
 				});
-<<<<<<< HEAD
 		}
 		
 		});
@@ -266,12 +217,8 @@ $(function(){
 			else v.addClass('enq-error');
 			
 			return st;
-=======
->>>>>>> origin/master
+
 		}
-		
-		
-<<<<<<< HEAD
 		function radiovalidate(obj,radioname){
 			var anv_radio=obj.find('[name='+radioname+']:checked');
 			
@@ -284,46 +231,7 @@ $(function(){
 			return false;			
 			}
 		}
-			
-=======
 
-		function fileValidate(v){
-			var st=true;
-			var req=false;
-			var exts_str=v.attr('data-extensions').toLowerCase();
-			var exts=[];
-			var f_val=v.val();
-			
-			if(v.attr('required')=="required"){
-				req=true;
-			}
-			
-			if(f_val!=""){
-				if(exts_str!=''){
-					exts=exts_str.split(',');			
-					if ($.inArray(f_val.split('.').pop().toLowerCase(), exts) == -1) {
-						console.log(v.val().split('.').pop().toLowerCase());
-						console.log("Only "+exts_str+" formats are allowed.");
-						st=false;
-					}
-				}
-				console.log(f_val);
-				console.log(v);
-			}
-			else{
-				if(req) st=false;				
-			}
-			
-			
-			if(st){
-				v.removeClass('enq-error');
-			}
-			else v.addClass('enq-error');
-			
-			return st;
-		}
-		
->>>>>>> origin/master
 		function enq_showmsg(obj,msg){
 			obj=obj.find('.enq_msg');
 			if(msg=='Thankyou... We will contact you soon...'){
