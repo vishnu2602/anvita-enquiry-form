@@ -97,7 +97,7 @@ var enq_appo={pluginurl:"<?php echo ANVITA_ENQUIRY_PLUGIN_URL;?>"};
 
 			var enqcover=enq_show_loading();
 			
-			var data={ action: 'enq_update_options' , field: 'alertdetails', to: eto, cc: ecc, bcc: ebcc, crm: enq_crm, phone: phn };
+			var data={ action: 'enq_update_options' , field: 'alertdetails', to: eto, cc: ecc, bcc: ebcc, crm: enq_crm, phone: phn };	
 			console.log(data);
 			$.post(ajaxurl, data, function(response) {
 				if(response.resp){

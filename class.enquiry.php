@@ -1,5 +1,4 @@
 <?php
-//error_reporting(E_ALL);
 class Enquiry{
 	
 	private static $plugin_options=[
@@ -74,7 +73,6 @@ class Enquiry{
 		if(isset($_SESSION[$sess])&&($_POST['enq-captcha']==$_SESSION[$sess])){
 			
 		$settings=json_decode(get_option('anv_setting'),true);
-		
 		$validate=self::validate_data($_POST);
 		if($validate['status']){
 			$vals=$_POST;
@@ -95,6 +93,27 @@ class Enquiry{
 			}
 			
 			global $wpdb;
+			$fileurls=[];
+			$iffile=0;
+			if(isset($_FILES)){
+				foreach($_FILES as $file){
+					if($file['name']!=''){
+					if ( ! function_exists( 'wp_handle_upload' ) ) require_once( ABSPATH . 'wp-admin/includes/file.php' );
+					$upload_overrides = array( 'test_form' => false );
+					$movefile = wp_handle_upload( $file, $upload_overrides );
+					if ( $movefile ) {
+						$movefile= $movefile['url'];	
+						array_push($fileurls,$movefile);
+						$iffile=1;
+					} else {
+						$movefile= "Invalid Attachments";
+					}
+				}			
+				
+				}			
+			}			
+			else $movefile='No Attachments';
+			
 			$ret=$wpdb->insert( self::enquirytable(), 
 				array( 
 							'time' => $now,
@@ -108,13 +127,16 @@ class Enquiry{
 							'msg'=>$vals['enq-msg'],
 							'age'=>$vals['enq-age'],
 							'address' => $vals['enq-address'],
+							'attachment' => $movefile,
 			 ));
+			
+			
 			if($ret){
 				$response['status']=true;
 				$response['msg']="<li>".$success_msg."</li>";
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
-				self::send_email_alert($vals,$settings);
+				self::send_email_alert($vals,$settings,$fileurls);
 				self::update_crm($vals,$settings);
 				self::send_sms($vals,$settings);
 				unset($_SESSION[$sess]);				
@@ -140,7 +162,6 @@ class Enquiry{
 		echo json_encode($response);
 		wp_die();
 	}
-		
 	public static function send_sms($vals,$opts){
 		if(!isset($vals['enq-phone'])) $teli=$vals['enq-phone'];
 		else $teli=$vals['enq-mobile'];		
@@ -159,6 +180,7 @@ class Enquiry{
 		return $response;
 			}
 	
+	
 	public static function update_crm($vals,$opts){
 		$parms="name=".urlencode($vals['enq-name'])."&email=".urlencode($vals['enq-email']).
 		"&country=".urlencode($vals['enq-selectedCountry']).
@@ -175,9 +197,10 @@ class Enquiry{
 		$response = curl_exec($ch);
 		curl_close($ch);
 		return $response;
-	}
+}
 	
-	public static function send_email_alert($vals,$settings){
+	public static function send_email_alert($vals,$settings,$file){
+	if(count($file)==0)  $attach=0; else $attach=1;
 		
 		$msg[0]='<table style="background-color:#fff; width:100%; max-width:500px;"><tbody>';
 		$remove=['enq-var',
@@ -204,14 +227,30 @@ class Enquiry{
 		
 		$head[] = 'From: Domain <'.$fromemail.'>';
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
-		function set_html_content_type() { return 'text/html';}
+	
+		
+		function set_html_content_type($content_type) {  
+		if( $attach ) {
+        return 'multipart/mixed';
+		} else {
+			return 'text/html';
+		}
+		}
+		
 		if($settings['email']['to']!="") $to=explode(',',$settings['email']['to']);
 		else $to='';
 		
 		$message=join($msg);
 
-		wp_mail( $to, $sub, $message, $headers );
-		
+		if($attach=='0') wp_mail( $to, $sub, $message, $headers );   
+		else {
+		$files=[]; 
+		foreach($file as $f){
+			$localpath=explode('uploads',$f);
+			array_push($files, WP_CONTENT_DIR . '/uploads/'.$localpath[1] );	 
+			}
+			wp_mail( $to, $sub, $message, $headers ,$files);	
+			}
 		if($vals['enq-email']!=""){
 			$message="<p>Hi ".$vals['enq-name']."</p><p>Your enquiry has been submitted with the following details</p>".$message.$lenqdetails;
 			wp_mail( $vals['enq-email'], $sub, $message, $head );
@@ -275,6 +314,8 @@ class Enquiry{
 		elseif($atts['theam']=="large"){
 
 		}
+		
+	
 		switch($atts['theam']){
 			case 'basic': require "templates/basic.php"; break;
 			case 'large': require "templates/large.php"; break;
@@ -336,6 +377,7 @@ class Enquiry{
 				`msg` MEDIUMTEXT NOT NULL,
 				`age` TINYINT(4) NULL DEFAULT NULL,
 				`address` VARCHAR(200) NULL DEFAULT NULL,
+				`attachment` VARCHAR(1000) NULL DEFAULT NULL,
 				`isdeleted` INT(2) NOT NULL DEFAULT '0',
 				UNIQUE INDEX `id` (`enqid`)) ".$wpdb->get_charset_collate();
 				require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

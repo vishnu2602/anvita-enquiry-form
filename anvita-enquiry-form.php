@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Anvita Enquiry Form
+ * Plugin Name: Anvita Enquiry Form Final
  * Author: Vishnu M
  * Text Domain: anvita-enquiry-form
  * Description: Plugin for generating enquiry forms

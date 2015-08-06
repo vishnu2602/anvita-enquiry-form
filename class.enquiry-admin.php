@@ -35,7 +35,7 @@ class Enquiryadmin{
 	}
 	
 	public static function admin_menu() {
-		add_menu_page('Enquiry', 'Enquiry', 2,'anvita-enquiry-form/admin/index.php','','dashicons-backup', 4.55);
+		add_menu_page('Enquiry', 'Enquiry', 'manage_options','anvita-enquiry-form/admin/index.php','','dashicons-backup', 4.55);
 	}
 	
 	public static function load_resources(){	
@@ -106,7 +106,8 @@ class Enquiryadmin{
 				'msg',
 				'isdeleted',
 				'type',
-				'enqid'
+				'enqid',
+				'attachment'
 		];
 		$class="odd";
 		foreach($res['result'] as $r){
