@@ -134,7 +134,7 @@ class Enquiry{
 				$response['data']=$_POST;
 				$vals['enq-type']=$enq_type;
 
-				$vals['validphone']=$validate['phone'];
+				$vals['enq-validphone']=$validate['phone'];
 				if($iffile==1) $iffile=$localpath[1];
 				self::send_email_alert($vals,$settings,$iffile);
 				self::update_crm($vals,$settings);
@@ -164,7 +164,7 @@ class Enquiry{
 	}
 	public static function send_sms($vals,$opts){
 		$max=160;
-		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$vals['validphone'].', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
+		$msg=$vals['enq-name'].', '.$vals['enq-email'].', '.$vals['enq-validphone'].', '.$vals['enq-selectedCountry'].', '.$vals['enq-msg'];
 		$msg=substr($msg, 0, $max);
 
 		$url="http://india.ebensms.com/api/v1/sms/bulk.json?token=8c776f82-6cbc-11e4-8804-586b6633fcfb&msisdn=".$opts['phone']."&text=".urlencode($msg)."&sender_id=MDGURU&route=TRANS";
@@ -182,7 +182,7 @@ class Enquiry{
 	public static function update_crm($vals,$opts){
 		$parms="name=".urlencode($vals['enq-name'])."&email=".urlencode($vals['enq-email']).
 		"&country=".urlencode($vals['enq-selectedCountry']).
-		"&phone=".urlencode($teli).
+		"&phone=".urlencode($vals['enq-validphone']).
 		"&message=".urlencode($vals['enq-msg']).
 		"&accid=".$opts['crm'];
 		
@@ -204,6 +204,7 @@ class Enquiry{
 				'enq-captcha',
 				'enq-type',
 				'enq-country',
+				'enq-validphone',
 		];
 		$i=1;
 		foreach($vals as $k=>$v){
