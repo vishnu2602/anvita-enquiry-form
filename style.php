@@ -130,7 +130,7 @@ width:30%; float:left;
 .anv_row{
 clear:both;
 }
-
+#quickcontact .select2{width:100% !important;}
 
 /******** Consult form style ***********/
 
