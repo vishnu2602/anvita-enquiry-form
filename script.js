@@ -267,10 +267,6 @@ $(function(){
 					if(inputval.length<3) valid=false;
 					else valid=true;
 				}
-				else if(obj.hasClass('enq-city')){
-					if(inputval.length<3) valid=false;
-					else valid=true;
-				} 
 				else if(obj.hasClass('enq-street')){
 					if(inputval.length<2) valid=false;
 					else valid=true;
