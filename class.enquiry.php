@@ -54,6 +54,15 @@ class Enquiry{
 	public static function enq_style(){
 		require_once 'style.php';
 	}
+	function get_domain($url)
+	{
+		$pieces = parse_url($url);
+		$domain = isset($pieces['host']) ? $pieces['host'] : '';
+		if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+			return $regs['domain'];
+		}
+		return false;
+	}
 	public static function anv_save_enquiry(){
 		ob_start();
 		if (session_status()== PHP_SESSION_NONE) 
@@ -217,12 +226,14 @@ class Enquiry{
 		$msg[$i]="</table>";
 		if($settings['email']['cc']!="") $headers[] = 'Cc: '.$settings['email']['cc'];
 		if($settings['email']['bcc']!="") $headers[] = 'Bcc: '.$settings['email']['bcc'];
+		$url=get_site_url();
+		$domain=self::get_domain($url);
 		
-		$sub="Enquiry through ".get_site_url();
+		$sub="Enquiry through ".$domain;
 		$lenqmsg="";
 		$lenqdetails="";
-		$fromemail="anvita.edb@gmail.com";
-		$head[] = 'From: Domain <'.$fromemail.'>';
+		$fromemail="no-reply@".$domain;
+		$head[] = 'From: '.$domain.' <'.$fromemail.'>';
 		add_filter( 'wp_mail_content_type', 'set_html_content_type' );
 		if($file=='0') $attach=0;else $attach=1;function set_html_content_type($content_type) {  
 		if( $attach ) {

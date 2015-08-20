@@ -2,7 +2,7 @@
 	<form method='post' role='form' name='quickcontact' id='quickcontact'>
 		<div style="width:100%;" class="enq_msg"></div>
 		<input type="hidden" class="enq-type" name="enq-type" value="normal"/>
-<textarea Placeholder='Message' class='form-control enq-input enq-address' name='enq-msg' id='enq-msg'></textarea>
+<textarea Placeholder='Your Requirement' class='form-control enq-input enq-address' name='enq-msg' id='enq-msg'></textarea>
 		
 		<input type='text' name='enq-name' id='enqs-name' class='form-control enq-name enq-input' placeholder='Name'/>
 		<input type='text' name='enq-email' id='enqs-email' class='form-control enq-input enq-email' placeholder='Email'/>
