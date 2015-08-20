@@ -65,8 +65,8 @@ $(function(){
 		function phonevalidate(m,p,enqwrap){
 			var mob=false;
 			var land=false;
-			var pregL=/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
-			var pregM=/^\+?([0-9]{2,4})\)?[-. ]?([0-9]{7,11})$/;
+			var pregL=/^\+?([0-9]{1,5})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
+			var pregM=/^\+?([0-9]{1,5})\)?[-. ]?([0-9]{7,11})$/;
 					
 					if(pregL.test(p)){
 						land=true;
