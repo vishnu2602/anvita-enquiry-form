@@ -296,7 +296,7 @@ class Enquiry{
 		$return=['status'=>false,'msg'=>'','value'=>''];
 		$mob=false;
 		$land=false;
-		if(preg_match("/^\+?([0-9]{1,5})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/",$lands)){
+		if(preg_match("/^\+?([0-9]{1,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/",$lands)){
 			$land=true;
 		}
 		if(preg_match("/^\+?([0-9]{1,4})\)?[-. ]?([0-9]{7,11})$/",$mobs)){

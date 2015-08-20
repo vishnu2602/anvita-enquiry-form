@@ -65,9 +65,8 @@ $(function(){
 		function phonevalidate(m,p,enqwrap){
 			var mob=false;
 			var land=false;
-			var pregL=/^\+?([0-9]{1,5})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
-			var pregM=/^\+?([0-9]{1,5})\)?[-. ]?([0-9]{7,11})$/;
-					
+			var pregL=/^\+?([0-9]{1,4})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
+			var pregM=/^\+?([0-9]{1,4})\)?[-. ]?([0-9]{7,11})$/;					
 					if(pregL.test(p)){
 						land=true;
 					}
@@ -122,7 +121,7 @@ $(function(){
 		$.each(data,function(k,v){
 			curobj=obj.find('[name='+v.name+']');
 			if (!curobj.hasClass('enq-newval')) {
-			valid=validateform(curobj,v.value); 
+			valid=validateform(curobj,v.value);
 			if(valid){
 				curobj.removeClass("enq-error");
 				}
@@ -135,10 +134,11 @@ $(function(){
 		});
 		var mob=obj.find('.phonecode').val()+'-'+obj.find('.enq-phone').val();
 		var land=obj.find('.phonecode').val()+'-'+obj.find('.enq-area').val()+'-'+obj.find('.enq-phone2').val();
-		
+		console.log(formvalid);
 		var x=true;
 		x=phonevalidate(mob,land,$(this));
 		if(!x) formvalid=x;
+
 		postdata.append("enq-mobile", mob);
 		postdata.append("enq-phone", land);
 		
@@ -200,6 +200,9 @@ $(function(){
 				btn.removeClass('enq-btn-deactive');
 				btn.addClass('enq-btn-active');
 				});
+		}
+		else{
+
 		}
 		
 		});
@@ -286,7 +289,7 @@ $(function(){
 					else{ valid=true; }
 				}
 				else if(obj.hasClass('enq-country')){
-					if(inputval.length<3) valid=false;
+					if(inputval.length<1) valid=false;
 					else valid=true;
 				}
 				else if(obj.hasClass('enq-street')){
@@ -294,16 +297,6 @@ $(function(){
 					else valid=true;
 					}				
 			
-				else if(obj.hasClass('enq-phone')){
-					var preg=/^\+?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
-					var preg1=/^\(?([0-9]{3,4})\)?[-. ]?([0-9]{4,7})$/;
-					var preg2=/^\(?([0-9]{2,3})\)?[-. ]?([0-9]{3,4})[-. ]?([0-9]{4,7})$/;
-					var preg3=/^\d{9,10}$/;
-					if(preg.test(inputval)||preg1.test(inputval)||preg2.test(inputval)||preg3.test(inputval)){
-						valid=true;
-					}
-					else{ valid=false; }
-				}
 				else if(obj.hasClass('enq-address')){
 					if(inputval.length<5||inputval.length>200) valid=false;
 					else valid=true;
