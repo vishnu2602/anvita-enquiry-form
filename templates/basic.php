@@ -2,6 +2,8 @@
 	<form method='post' role='form' name='quickcontact' id='quickcontact'>
 		<div style="width:100%;" class="enq_msg"></div>
 		<input type="hidden" class="enq-type" name="enq-type" value="normal"/>
+<textarea Placeholder='Message' class='form-control enq-input enq-address' name='enq-msg' id='enq-msg'></textarea>
+		
 		<input type='text' name='enq-name' id='enqs-name' class='form-control enq-name enq-input' placeholder='Name'/>
 		<input type='text' name='enq-email' id='enqs-email' class='form-control enq-input enq-email' placeholder='Email'/>
 		<select name='enq-country' class="enq-country anv_select_country form-control enq-input select" id='enq-country'>
@@ -24,7 +26,7 @@
 			<div class="anv_clear"></div>
 		</div>
 		</div>
-		<textarea Placeholder='Message' class='form-control enq-input enq-address' name='enq-msg' id='enq-msg'></textarea>
+		
 		<div class="captcha">
 		<?php $enq_rand='enq-'.rand(0,999); ?>
 		<input type="hidden" class="enq-captchavar" name="enq-var" value="<?php echo $enq_rand; ?>"/>

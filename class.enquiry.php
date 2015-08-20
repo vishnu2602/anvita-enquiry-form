@@ -36,7 +36,7 @@ class Enquiry{
 		wp_register_style( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/css/select2.min.css', array(), 4 );
 		wp_enqueue_style( 'select2');
 
-		wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.min.js', array(), 4, true );
+		wp_register_script( 'select2', '//cdnjs.cloudflare.com/ajax/libs/select2/4.0.0/js/select2.full.min.js', array(), 4, true );
 		wp_enqueue_script( 'select2' );
 		
 		wp_register_script( 'anv_enq', ANVITA_ENQUIRY_PLUGIN_URL.'script.js', array('jquery','select2'), 1.0, true );

@@ -16,9 +16,31 @@
 		}
 });
  
+/*
+
 $(".anv_select_country").select2({
-tags: true,				 
+	theme: "classic",
+	matcher: oldMatcher(matchStart)//function(term, text) { console.log(text);console.log(term); return text.text.toUpperCase().indexOf(term.term.toUpperCase())==0; },
+	//tags: true,
 });
+
+*/
+
+
+function matchStart (term, text) {
+  if (text.toUpperCase().indexOf(term.toUpperCase()) == 0) {
+    return true;
+  } 
+  return false;
+}
+ 
+$.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
+  $(".anv_select_country").select2({
+  	theme: "classic",
+    matcher: oldMatcher(matchStart)
+  })
+});
+
 				
 $(function(){	
 	$.ajax({
