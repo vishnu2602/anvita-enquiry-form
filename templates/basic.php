@@ -16,13 +16,13 @@
 		<div class="anv_phone">
 		<div class="mobile_box">
 			<div style="width:20%; float:left;"><input name='phonecode' id='phonecode' type='text' class='form-control enq-newval enq-input phonecode'></div>	
-			<div style="width:79%; float:left;"><input style="margin-left:4px;" name='phone' id='phone1' type='text' class='quickenqfield form-control mobi enq-newval enq-input enq-phone' placeholder='Phone'/></div>
+			<div style="width:79%; float:left;"><input style="margin-left:3px;" name='phone' id='phone1' type='text' class='quickenqfield form-control mobi enq-newval enq-input enq-phone' placeholder='Phone'/></div>
 			<div class="anv_clear"></div>
 		</div>	
 		<div class="mobile_box">
 			<div style="width:20%; float:left;"><input type='text' class='form-control land enq-input enq-newval phonecode2' id='phonecode2' name='phonecode2' /></div>
-			<div style="width:29%; float:left;"><input style="margin-left:4px;" type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/></div>
-			<div style="width:50%; float:left;"><input style="margin-left:6px;" type='text' id='phone2' class='form-control land enq-newval enq-input enq-phone2' name='phone2' placeholder='Phone'/></div>
+			<div style="width:29%; float:left;"><input style="margin-left:2px;" type='text' id='areacode' class='form-control land enq-newval enq-input enq-area' name='areacode' placeholder='Area Code'/></div>
+			<div style="width:50%; float:left;"><input style="margin-left:3px;" type='text' id='phone2' class='form-control land enq-newval enq-input enq-phone2' name='phone2' placeholder='Phone'/></div>
 			<div class="anv_clear"></div>
 		</div>
 		</div>

@@ -10,6 +10,7 @@
 	padding:3px 5px;
 	background:#B93207;
 }
+.anvita-enq .select2{width:100% !important;}
 .anvita-enq .enq_msg.enq-shown.enq-success{
 border:1px solid #B93207;
 }
@@ -88,8 +89,8 @@ margin:5px 0;
 	color:rgba(51, 51, 51, 0.7);
 }
 .anvita-enq input.enq-input,.anvita-enq textarea.enq-input{
-	margin:5px 2px;
-	padding: 0.5278em;
+	margin:5px 0px;
+	padding: 5px 0;
 	background:#F7F7F7;
 	color:#707070;
 	color:rgba(51, 51, 51, 0.7);
