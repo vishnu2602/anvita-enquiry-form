@@ -37,6 +37,7 @@ function matchStart (term, text) {
 $.fn.select2.amd.require(['select2/compat/matcher'], function (oldMatcher) {
   $(".anv_select_country").select2({
 	theme: "classic",
+	tags: "true",
     matcher: oldMatcher(matchStart)
   })
 });
