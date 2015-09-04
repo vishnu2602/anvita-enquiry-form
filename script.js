@@ -281,8 +281,10 @@ $(function(){
 				}
 			else if(obj.hasClass('enq-age')){
 				var preg4=/^\(?([0-9]{1,3})$/;
+				if(inputval!=''){
 				if(!preg4.test(inputval)){ valid=false; }
 				else{ valid=true; }
+				}
 			}
 				else if(obj.hasClass('enq-email')){
 					var eregx = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
@@ -294,13 +296,17 @@ $(function(){
 					else valid=true;
 				}
 				else if(obj.hasClass('enq-street')){
+					
 					if(inputval.length<2) valid=false;
 					else valid=true;
+				
 					}				
 			
 				else if(obj.hasClass('enq-address')){
+					if(inputval!=''){
 					if(inputval.length<5||inputval.length>200) valid=false;
 					else valid=true;
+				}
 				}
 				else if(obj.hasClass('enq-captcha')){
 					if(inputval.length<4) valid=false;

@@ -13,7 +13,7 @@
 			
 			<div class="anv_row">
 			<div class="anv_30">Age :</div>
-			<div class="anv_70"><input type='text' name='enq-age' class="form-control enq-age enq-input"/></div>
+			<div class="anv_70"><input type='text' name='enq-age' class="form-control enq-age enq-input novalidate"/></div>
 			</div>
 			
 			<div class="anv_row">
@@ -23,7 +23,7 @@
 			
 			<div class="anv_row">
 			<div class="anv_30">Address</div>
-			<div class="anv_70"><textarea  name='enq-address' class='enq-input enq-address form-control'></textarea></div>
+			<div class="anv_70"><textarea  name='enq-address' class='enq-input enq-address form-control novalidate'></textarea></div>
 			</div>
 			
 			<div class="anv_row">
@@ -38,7 +38,7 @@
 			
 			<div class="anv_row">
 			<div class="anv_30">City</div>
-			<div class="anv_70"><input type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city' placeholder='City'/></div>
+			<div class="anv_70"><input type='text' name='enq-city' id='enqs-city' class='form-control enq-input enq-city novalidate' placeholder='City'/></div>
 			<div class="anv_clear"></div>
 			</div>
 			

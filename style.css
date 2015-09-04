@@ -1,3 +1,7 @@
+.anvita-enq input.enq-input.phonecode{
+	max-width: 50px;
+}
+
 .anvita-enq .enq-msg{font-size:12px;}
 .anvita-enq .enq-msg li{
 	padding:0 5px; 
